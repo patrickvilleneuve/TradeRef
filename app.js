@@ -104,6 +104,10 @@
     };
   }
 
+  function valueAboveReplacement(score) {
+    return Math.max(score - 45, 0);
+  }
+
   function getLetterGrade(score) {
     if (score >= 93) return "A+";
     if (score >= 90) return "A";
@@ -245,7 +249,9 @@
     name.textContent = player.name;
     const meta = document.createElement("p");
     meta.textContent = player.position + " · " + player.team;
-    identity.append(name, meta);
+    const tradeValue = document.createElement("p");
+    tradeValue.textContent = "Trade value: " + valueAboveReplacement(graded.score);
+    identity.append(name, meta, tradeValue);
     const score = document.createElement("div");
     score.className = "trade-score";
     const scoreNumber = document.createElement("strong");
@@ -267,7 +273,7 @@
 
   function sideTotal(ids) {
     const raw = ids.reduce(function (sum, id) {
-      return sum + calculateTradeValueScore(findPlayer(id)).score;
+      return sum + valueAboveReplacement(calculateTradeValueScore(findPlayer(id)).score);
     }, 0);
     return { total: raw, raw: raw, bestBonus: 0 };
   }
@@ -447,6 +453,7 @@
       getSearch.value = "";
       results.hidden = true;
       renderAll();
+      analyzeTrade();
     });
   });
 
