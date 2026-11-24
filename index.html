@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>YourStartup</title>
+  <title>TradeRef</title>
   <meta name="description" content="A student startup prototype for BSAD 281.">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -11,14 +11,15 @@
 
   <!-- =========================================================
        HEADER: logo text + navigation.
-       Each link points to a "view" further down the page (#home, #explore, #about).
+       Each link points to a "view" further down the page.
        ========================================================= -->
   <header class="site-header">
-    <a class="brand" href="#home" id="brand-name">YourStartup</a>
+    <a class="brand" href="#home" id="brand-name">TradeRef</a>
     <nav aria-label="Main">
       <a href="#home">Home</a>
-      <a href="#explore">Explore</a>
-      <a href="#about">About</a>
+      <a href="#analyze">Analyze</a>
+      <a href="#my-league">My League</a>
+      <a href="#how-it-works">How it works</a>
     </nav>
   </header>
 
@@ -30,54 +31,114 @@
     <section id="home" data-view>
       <div class="hero">
         <p class="eyebrow">Prototype</p>
-        <h1 id="tagline">One sentence that says what your startup does.</h1>
+        <h1 id="tagline">Know if you're winning the trade before you hit accept.</h1>
         <p class="lead" id="pitch">
-          Who is your customer, what problem do they have, and why is your
-          solution better than what they use today?
+          TradeRef helps fantasy football managers in 10–12 team redraft leagues
+          compare trade offers using fictional player data instead of guessing.
         </p>
-        <a class="button" href="#explore">See it in action</a>
+        <a class="button" href="#analyze">Analyze a trade</a>
       </div>
 
       <div class="steps">
         <div class="card">
-          <h2>1. Step one</h2>
-          <p>Describe the first thing a customer does.</p>
+          <span class="step-number">1</span>
+          <h2>Add the players in the offer</h2>
+          <p>Choose the players going to and from your team.</p>
         </div>
         <div class="card">
-          <h2>2. Step two</h2>
-          <p>Describe what happens next.</p>
+          <span class="step-number">2</span>
+          <h2>TradeRef grades every player</h2>
+          <p>The grade considers injuries, usage, stats and analyst projections.</p>
         </div>
         <div class="card">
-          <h2>3. Step three</h2>
-          <p>Describe the result the customer gets.</p>
+          <span class="step-number">3</span>
+          <h2>See if you're winning or losing</h2>
+          <p>See the trade outcome and whether they'll accept.</p>
         </div>
       </div>
     </section>
 
     <!-- =======================================================
-         VIEW 2: EXPLORE — a list built from the fake data in data.js.
+         VIEW 2: ANALYZE
          ======================================================= -->
-    <section id="explore" data-view hidden>
-      <h1>Explore</h1>
-      <p class="muted">These examples are fake. They come from <code>data.js</code>.</p>
+    <section id="analyze" data-view hidden>
+      <h1>Analyze</h1>
+      <div class="example-row" aria-label="Try a sample trade">
+        <button type="button" class="example-button" data-example="winning">Try a winning trade</button>
+        <button type="button" class="example-button" data-example="fair">Try a fair trade</button>
+        <button type="button" class="example-button" data-example="losing">Try a losing trade</button>
+      </div>
 
-      <label class="search">
-        <span>Search</span>
-        <input type="search" id="search-box" placeholder="Type to filter…">
-      </label>
+      <div class="trade-builder">
+        <section class="trade-side" aria-labelledby="give-heading">
+          <h2 id="give-heading">You give</h2>
+          <label class="player-search">
+            <span>Search players</span>
+            <input type="search" id="give-search" autocomplete="off" placeholder="Type a player name">
+          </label>
+          <div class="search-results" id="give-results" role="listbox"></div>
+          <div class="selected-players" id="give-selected"></div>
+        </section>
 
-      <p class="muted" id="saved-count"></p>
-      <div class="grid" id="listing-grid"></div>
-      <p class="empty" id="empty-message" hidden>Nothing matches your search.</p>
+        <section class="trade-side" aria-labelledby="get-heading">
+          <h2 id="get-heading">You get</h2>
+          <label class="player-search">
+            <span>Search players</span>
+            <input type="search" id="get-search" autocomplete="off" placeholder="Type a player name">
+          </label>
+          <div class="search-results" id="get-results" role="listbox"></div>
+          <div class="selected-players" id="get-selected"></div>
+        </section>
+      </div>
+
+      <div class="trade-actions">
+        <button type="button" class="button" id="analyze-button" disabled>Analyze trade</button>
+        <button type="button" class="button reset-button" id="reset-button">Reset</button>
+      </div>
+
+      <section id="trade-results" class="trade-results" aria-live="polite" hidden></section>
     </section>
 
     <!-- =======================================================
-         VIEW 3: ABOUT — your team and your story.
+         VIEW 3: MY LEAGUE
          ======================================================= -->
-    <section id="about" data-view hidden>
-      <h1>About us</h1>
-      <p>Tell the story of why your team started this company.</p>
-      <p>Use first names only, or no names at all — this site is public.</p>
+    <section id="my-league" data-view hidden>
+      <h1>My League</h1>
+      <p class="coming-soon">Coming soon</p>
+    </section>
+
+    <!-- =======================================================
+         VIEW 4: HOW IT WORKS
+         ======================================================= -->
+    <section id="how-it-works" data-view hidden>
+      <h1>How it works</h1>
+      <p class="lead">TradeRef combines six plain-English factors into one player grade.</p>
+      <div class="factor-grid">
+        <article class="card">
+          <h2>Rest-of-season projection</h2>
+          <p>The analyst estimate of fantasy points per game from now through the end of the season.</p>
+        </article>
+        <article class="card">
+          <h2>This season's points</h2>
+          <p>The player's current fantasy production per game, measured in half-PPR scoring.</p>
+        </article>
+        <article class="card">
+          <h2>Usage and touch share</h2>
+          <p>Expected carries and targets per game, plus the percentage of the team's touches the player receives.</p>
+        </article>
+        <article class="card">
+          <h2>Last season's points</h2>
+          <p>Previous-year fantasy points per game provide context for the player's experience and established role.</p>
+        </article>
+        <article class="card">
+          <h2>Injury status and missed weeks</h2>
+          <p>Healthy, Questionable, Out or IR status is weighed alongside analysts' estimated weeks away.</p>
+        </article>
+        <article class="card">
+          <h2>Injuries to teammates</h2>
+          <p>When teammates are unavailable, a player may get more targets or touches; the grade notes that expected role change.</p>
+        </article>
+      </div>
     </section>
 
   </main>
