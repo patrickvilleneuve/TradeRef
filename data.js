@@ -94,3 +94,76 @@ const PLAYERS = [
   { id: 59, name: "Wes Rowan", position: "TE", team: "Maple Valley Foxes", age: 28, byeWeek: 6, thisSeasonPPG: 7.2, lastSeasonPPG: 8.0, projectionPPG: 7.0, touchesPerGame: 4.4, touchShare: 10, injuryStatus: "Healthy", expectedWeeksOut: 0, injuredTeammates: "Second TE active: more rotation" },
   { id: 60, name: "Carter Lowe", position: "TE", team: "Mesa Verde Stallions", age: 22, byeWeek: 7, thisSeasonPPG: 6.4, lastSeasonPPG: 4.8, projectionPPG: 6.7, touchesPerGame: 4.1, touchShare: 9, injuryStatus: "Healthy", expectedWeeksOut: 0, injuredTeammates: "WR2 out 1 week: +0.7 targets/game" }
 ];
+
+const EXTRA_PLAYER_FIRST_NAMES = [
+  "Ari", "Bennett", "Callum", "Darcy", "Ellis", "Frankie",
+  "Gideon", "Hollis", "Jamie", "Keaton", "Linden", "Marlowe"
+];
+const EXTRA_PLAYER_LAST_NAMES = [
+  "Alden", "Briar", "Caldwell", "Dunley", "Ellery",
+  "Farrow", "Garnett", "Hollander", "Ives", "Juniper"
+];
+
+function makeExtraPlayers(position, count, firstId) {
+  const projectionRanges = {
+    RB: { base: 7, spread: 11 },
+    WR: { base: 6, spread: 12 },
+    TE: { base: 5, spread: 8 }
+  };
+  const range = projectionRanges[position];
+  return Array.from({ length: count }, function (_, index) {
+    const nameIndex = firstId - 61 + index;
+    const projection = range.base + (index % 16) * range.spread / 15;
+    const injuryStatus = index % 17 === 0 ? "Questionable" : "Healthy";
+    return {
+      id: firstId + index,
+      name: EXTRA_PLAYER_FIRST_NAMES[nameIndex % EXTRA_PLAYER_FIRST_NAMES.length] + " " +
+        EXTRA_PLAYER_LAST_NAMES[Math.floor(nameIndex / EXTRA_PLAYER_FIRST_NAMES.length)],
+      position: position,
+      team: TEAMS[(firstId + index) % TEAMS.length],
+      age: 21 + (index % 13),
+      byeWeek: 5 + (index % 10),
+      thisSeasonPPG: Number((projection * 0.96).toFixed(1)),
+      lastSeasonPPG: Number((projection * 0.91).toFixed(1)),
+      projectionPPG: Number(projection.toFixed(1)),
+      touchesPerGame: position === "RB" ? 7 + (index % 18) : 3 + (index % 8),
+      touchShare: 12 + (index * 5 % 56),
+      injuryStatus: injuryStatus,
+      expectedWeeksOut: injuryStatus === "Healthy" ? 0 : 1,
+      injuredTeammates: index % 3 === 0
+        ? "A teammate is out briefly: +1.2 opportunities/game"
+        : "No projected teammate role changes"
+    };
+  });
+}
+
+PLAYERS.push.apply(PLAYERS, makeExtraPlayers("RB", 40, 61));
+PLAYERS.push.apply(PLAYERS, makeExtraPlayers("WR", 64, 101));
+PLAYERS.push.apply(PLAYERS, makeExtraPlayers("TE", 16, 165));
+
+const DEMO_LEAGUE = {
+  leagueId: "DEMO-281",
+  myTeamId: "team-1",
+  teams: TEAMS.slice(0, 12).map(function (name, teamIndex) {
+    const positionCounts = { QB: 1, RB: 5, WR: 7, TE: 2 };
+    const roster = Object.keys(positionCounts).reduce(function (playerIds, position) {
+      const positionPlayers = PLAYERS.filter(function (player) {
+        return player.position === position;
+      });
+      const count = positionCounts[position];
+      const teamPlayers = positionPlayers.slice(teamIndex * count, (teamIndex + 1) * count);
+      return playerIds.concat(teamPlayers.map(function (player) { return player.id; }));
+    }, []);
+
+    return {
+      id: "team-" + (teamIndex + 1),
+      name: name,
+      managerName: teamIndex === 0
+        ? "You"
+        : ["Avery", "Jordan", "Morgan", "Riley", "Casey", "Quinn", "Emery", "Reese", "Skyler", "Tatum", "Parker"][teamIndex - 1],
+      record: ["7-3", "6-4", "6-4", "5-5", "5-5", "4-6", "7-3", "3-7", "6-4", "4-6", "5-5", "3-7"][teamIndex],
+      tradeStyle: ["Active", "Picky", "Rarely trades", "Active", "Picky", "Rarely trades", "Picky", "Active", "Rarely trades", "Active", "Picky", "Rarely trades"][teamIndex],
+      roster: roster
+    };
+  })
+};

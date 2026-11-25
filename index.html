@@ -63,7 +63,11 @@
          ======================================================= -->
     <section id="analyze" data-view hidden>
       <h1>Analyze</h1>
-      <div class="example-row" aria-label="Try a sample trade">
+      <div class="team-matchup" id="team-matchup" hidden>
+        <label for="trade-partner">Trading with</label>
+        <select id="trade-partner"></select>
+      </div>
+      <div class="example-row" id="example-row" aria-label="Try a sample trade">
         <button type="button" class="example-button" data-example="winning">Try a winning trade</button>
         <button type="button" class="example-button" data-example="fair">Try a fair trade</button>
         <button type="button" class="example-button" data-example="losing">Try a losing trade</button>
@@ -104,7 +108,43 @@
          ======================================================= -->
     <section id="my-league" data-view hidden>
       <h1>My League</h1>
-      <p class="coming-soon">Coming soon</p>
+      <div class="card connect-card" id="connect-card">
+        <h2>Connect your league</h2>
+        <p>Enter a league ID to load a sample league. No account or password needed.</p>
+        <label class="league-id-field" for="league-id">League ID</label>
+        <input type="text" id="league-id" autocomplete="off" placeholder="Enter any league ID">
+        <div class="league-actions">
+          <button type="button" class="button" id="load-league">Load my league</button>
+          <button type="button" class="example-button" id="demo-league">Use demo league</button>
+        </div>
+      </div>
+      <p class="league-message" id="league-message" aria-live="polite"></p>
+      <div id="league-dashboard" hidden>
+        <div class="league-heading">
+          <div>
+            <p class="eyebrow">League loaded</p>
+            <h2 id="my-team-title"></h2>
+            <p id="my-team-meta" class="muted"></p>
+          </div>
+          <button type="button" class="example-button" id="disconnect-league">Disconnect</button>
+        </div>
+        <p class="demo-note">Demo: in the real version this imports your league from your fantasy platform.</p>
+        <div class="league-dashboard-grid">
+          <section class="card" aria-labelledby="needs-heading">
+            <h2 id="needs-heading">Team needs</h2>
+            <p class="muted">Starter projections compared with the league average.</p>
+            <div class="needs-list" id="team-needs"></div>
+          </section>
+          <section class="card" aria-labelledby="roster-heading">
+            <h2 id="roster-heading">My roster</h2>
+            <div id="my-roster"></div>
+          </section>
+        </div>
+        <section class="card league-teams-card">
+          <h2>League teams</h2>
+          <div class="league-teams-list" id="league-teams"></div>
+        </section>
+      </div>
     </section>
 
     <!-- =======================================================

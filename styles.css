@@ -147,6 +147,36 @@ h1 {
   margin: 16px 0 24px;
 }
 
+.team-matchup {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  max-width: 520px;
+  margin: 16px 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.team-matchup label,
+.league-id-field {
+  font-weight: 750;
+}
+
+.team-matchup select,
+.connect-card input {
+  min-width: 0;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+}
+
 .example-button,
 .reset-button {
   background: #fff;
@@ -471,6 +501,201 @@ h1 {
   color: var(--muted);
 }
 
+.connect-card {
+  max-width: 620px;
+}
+
+.connect-card h2 {
+  margin-top: 0;
+}
+
+.connect-card > p {
+  margin-bottom: 14px;
+}
+
+.league-id-field {
+  display: block;
+  margin: 0 0 6px;
+}
+
+.league-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.league-actions .button {
+  margin: 0;
+}
+
+.league-message {
+  min-height: 1.5em;
+  margin: 10px 0 0 !important;
+  color: var(--amber) !important;
+  font-size: 0.9rem;
+}
+
+.league-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 22px 0 12px;
+}
+
+.league-heading h2 {
+  margin: 0 0 4px;
+}
+
+.league-heading .eyebrow {
+  margin-bottom: 8px;
+}
+
+.demo-note {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.league-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 16px;
+}
+
+.league-dashboard-grid .card h2,
+.league-teams-card h2 {
+  margin: 0 0 6px;
+}
+
+.needs-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.need-row {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.need-row > span:nth-child(2) {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.need-status {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.need-status.strong {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.need-status.ok {
+  background: #e8edf3;
+  color: var(--navy-2);
+}
+
+.need-status.weak {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.roster-group + .roster-group {
+  margin-top: 12px;
+}
+
+.roster-group h3 {
+  margin: 10px 0 4px;
+  font-size: 0.95rem;
+}
+
+.roster-group ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 16px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.league-teams-card {
+  margin-top: 16px;
+}
+
+.league-teams-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.league-team {
+  display: grid;
+  gap: 2px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+}
+
+.league-team span {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.league-insights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.league-insights .card h2 {
+  margin: 0 0 10px;
+}
+
+.league-insights .card p + p {
+  margin-top: 8px;
+}
+
+.fit-points {
+  font-weight: 750;
+  color: var(--text) !important;
+}
+
+.acceptance-percent {
+  display: block;
+  margin: 4px 0 8px;
+  font-size: 1.8rem;
+}
+
+.acceptance-meter {
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  background: #e8edf3;
+}
+
+.acceptance-meter div {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand);
+}
+
 .step-number {
   display: inline-grid;
   place-items: center;
@@ -480,16 +705,6 @@ h1 {
   background: var(--navy);
   color: #fff;
   font-weight: 800;
-}
-
-.coming-soon {
-  display: inline-block;
-  margin-top: 12px;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: #fff4d6;
-  color: var(--amber);
-  font-weight: 750;
 }
 
 .site-footer {
@@ -532,8 +747,22 @@ h1 {
   .factor-grid,
   .trade-builder,
   .graded-sides,
-  .trade-totals {
+  .trade-totals,
+  .league-dashboard-grid,
+  .league-insights {
     grid-template-columns: 1fr;
+  }
+
+  .league-teams-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .roster-group ul {
+    grid-template-columns: 1fr;
+  }
+
+  .league-heading {
+    align-items: flex-start;
   }
 
   .example-row {

@@ -45,6 +45,18 @@
   const analyzeButton = document.getElementById("analyze-button");
   const resetButton = document.getElementById("reset-button");
   const results = document.getElementById("trade-results");
+  const exampleRow = document.getElementById("example-row");
+  const matchup = document.getElementById("team-matchup");
+  const tradePartner = document.getElementById("trade-partner");
+  const connectCard = document.getElementById("connect-card");
+  const leagueDashboard = document.getElementById("league-dashboard");
+  const leagueIdInput = document.getElementById("league-id");
+  const leagueMessage = document.getElementById("league-message");
+  let activeLeague = null;
+  let activePartnerId = null;
+
+  const starterSlots = { QB: 1, RB: 2, WR: 2, TE: 1 };
+  const storageKey = "traderef-loaded-league";
 
   function clamp(value, minimum, maximum) {
     return Math.max(minimum, Math.min(maximum, value));
@@ -128,6 +140,204 @@
     return PLAYERS.find(function (player) { return player.id === id; });
   }
 
+  function findLeagueTeam(teamId) {
+    return activeLeague && activeLeague.teams.find(function (team) {
+      return team.id === teamId;
+    });
+  }
+
+  function isValidLeague(league) {
+    if (!league || typeof league.leagueId !== "string" ||
+        typeof league.myTeamId !== "string" || !Array.isArray(league.teams) ||
+        league.teams.length !== 12) return false;
+    const allRosterIds = [];
+    const validTeams = league.teams.every(function (team) {
+      if (!team || typeof team.id !== "string" || typeof team.name !== "string" ||
+          typeof team.managerName !== "string" || typeof team.record !== "string" ||
+          typeof team.tradeStyle !== "string" || !Array.isArray(team.roster) ||
+          team.roster.length !== 15 ||
+          team.roster.some(function (id) { return !findPlayer(id); })) return false;
+      allRosterIds.push.apply(allRosterIds, team.roster);
+      return true;
+    });
+    return validTeams &&
+      league.teams.some(function (team) { return team.id === league.myTeamId; }) &&
+      new Set(allRosterIds).size === allRosterIds.length;
+  }
+
+  function loadSavedLeague() {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      if (isValidLeague(parsed)) {
+        activeLeague = parsed;
+        activePartnerId = parsed.teams.find(function (team) {
+          return team.id !== parsed.myTeamId;
+        }).id;
+      } else {
+        leagueMessage.textContent = "The saved league data could not be loaded. Connect again to continue.";
+      }
+    } catch (error) {
+      leagueMessage.textContent = "Your saved league could not be read from this browser.";
+    }
+  }
+
+  function saveLeague(league) {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(league));
+      return true;
+    } catch (error) {
+      leagueMessage.textContent = "League loaded for this visit, but your browser could not save it.";
+      return false;
+    }
+  }
+
+  function getLeagueTeams() {
+    return activeLeague ? activeLeague.teams : [];
+  }
+
+  function getRoster(team) {
+    return team.roster.map(findPlayer).filter(Boolean);
+  }
+
+  function getLeagueAverage(position) {
+    const slotCount = starterSlots[position];
+    const teamTotals = getLeagueTeams().map(function (team) {
+      return getRoster(team).filter(function (player) {
+        return player.position === position;
+      }).sort(function (a, b) {
+        return b.projectionPPG - a.projectionPPG;
+      }).slice(0, slotCount).reduce(function (sum, player) {
+        return sum + player.projectionPPG;
+      }, 0);
+    });
+    return teamTotals.reduce(function (sum, total) {
+      return sum + total;
+    }, 0) / Math.max(teamTotals.length, 1);
+  }
+
+  function getPositionRatings(rosterIds) {
+    const roster = rosterIds.map(findPlayer).filter(Boolean);
+    return Object.keys(starterSlots).reduce(function (ratings, position) {
+      const slotCount = starterSlots[position];
+      const total = roster.filter(function (player) {
+        return player.position === position;
+      }).sort(function (a, b) {
+        return b.projectionPPG - a.projectionPPG;
+      }).slice(0, slotCount).reduce(function (sum, player) {
+        return sum + player.projectionPPG;
+      }, 0);
+      const average = getLeagueAverage(position);
+      const ratio = total / Math.max(average, 1);
+      ratings[position] = {
+        total: total,
+        average: average,
+        rating: ratio >= 1.1 ? "Strong" : ratio < 0.9 ? "Weak" : "OK"
+      };
+      return ratings;
+    }, {});
+  }
+
+  function getStartingProjection(rosterIds) {
+    const roster = rosterIds.map(findPlayer).filter(Boolean);
+    return Object.keys(starterSlots).reduce(function (total, position) {
+      return total + roster.filter(function (player) {
+        return player.position === position;
+      }).sort(function (a, b) {
+        return b.projectionPPG - a.projectionPPG;
+      }).slice(0, starterSlots[position]).reduce(function (sum, player) {
+        return sum + player.projectionPPG;
+      }, 0);
+    }, 0);
+  }
+
+  function makeRosterGroup(position, players) {
+    const group = document.createElement("section");
+    group.className = "roster-group";
+    const heading = document.createElement("h3");
+    heading.textContent = position + " (" + players.length + ")";
+    const list = document.createElement("ul");
+    players.forEach(function (player) {
+      const item = document.createElement("li");
+      item.textContent = player.name + " · " + player.projectionPPG.toFixed(1) + " projected PPG";
+      list.append(item);
+    });
+    group.append(heading, list);
+    return group;
+  }
+
+  function renderLeagueDashboard() {
+    connectCard.hidden = Boolean(activeLeague);
+    leagueDashboard.hidden = !activeLeague;
+    matchup.hidden = !activeLeague;
+    exampleRow.hidden = Boolean(activeLeague);
+    if (!activeLeague) return;
+
+    const myTeam = findLeagueTeam(activeLeague.myTeamId);
+    const myRoster = getRoster(myTeam);
+    document.getElementById("my-team-title").textContent = myTeam.name;
+    document.getElementById("my-team-meta").textContent =
+      myTeam.managerName + " · " + myTeam.record + " · Trade style: " + myTeam.tradeStyle;
+
+    const rosterContainer = document.getElementById("my-roster");
+    rosterContainer.replaceChildren();
+    Object.keys(starterSlots).forEach(function (position) {
+      const players = myRoster.filter(function (player) {
+        return player.position === position;
+      }).sort(function (a, b) {
+        return b.projectionPPG - a.projectionPPG;
+      });
+      rosterContainer.append(makeRosterGroup(position, players));
+    });
+
+    const needsContainer = document.getElementById("team-needs");
+    needsContainer.replaceChildren();
+    const ratings = getPositionRatings(myTeam.roster);
+    Object.keys(ratings).forEach(function (position) {
+      const row = document.createElement("div");
+      row.className = "need-row";
+      const label = document.createElement("strong");
+      label.textContent = position;
+      const comparison = document.createElement("span");
+      comparison.textContent = ratings[position].total.toFixed(1) + " vs " +
+        ratings[position].average.toFixed(1) + " league avg";
+      const status = document.createElement("span");
+      status.className = "need-status " + ratings[position].rating.toLowerCase();
+      status.textContent = ratings[position].rating;
+      row.append(label, comparison, status);
+      needsContainer.append(row);
+    });
+
+    const leagueTeams = document.getElementById("league-teams");
+    leagueTeams.replaceChildren();
+    activeLeague.teams.forEach(function (team) {
+      const item = document.createElement("article");
+      item.className = "league-team";
+      const name = document.createElement("strong");
+      name.textContent = team.name + (team.id === activeLeague.myTeamId ? " (You)" : "");
+      const detail = document.createElement("span");
+      detail.textContent = team.managerName + " · " + team.record + " · " + team.tradeStyle;
+      item.append(name, detail);
+      leagueTeams.append(item);
+    });
+
+    const options = activeLeague.teams.filter(function (team) {
+      return team.id !== activeLeague.myTeamId;
+    });
+    if (!options.some(function (team) { return team.id === activePartnerId; })) {
+      activePartnerId = options[0].id;
+    }
+    tradePartner.replaceChildren();
+    options.forEach(function (team) {
+      const option = document.createElement("option");
+      option.value = team.id;
+      option.textContent = team.name + " · " + team.managerName;
+      tradePartner.append(option);
+    });
+    tradePartner.value = activePartnerId;
+  }
+
   function renderSearch(side) {
     const isGive = side === "give";
     const search = isGive ? giveSearch : getSearch;
@@ -144,8 +354,14 @@
       return;
     }
 
+    const allowedIds = activeLeague
+      ? new Set(isGive
+        ? findLeagueTeam(activeLeague.myTeamId).roster
+        : (findLeagueTeam(activePartnerId) || { roster: [] }).roster)
+      : null;
     const matches = PLAYERS.filter(function (player) {
       return player.name.toLowerCase().includes(query) &&
+        (!allowedIds || allowedIds.has(player.id)) &&
         selected.indexOf(player.id) === -1;
     }).slice(0, 8);
 
@@ -208,15 +424,70 @@
 
   function renderAll() {
     results.hidden = true;
+    renderLeagueDashboard();
     renderSearch("give");
     renderSearch("get");
     renderSelected("give");
     renderSelected("get");
+    const partner = findLeagueTeam(activePartnerId);
+    document.getElementById("give-heading").textContent = activeLeague ? "You give · your roster" : "You give";
+    document.getElementById("get-heading").textContent = activeLeague
+      ? "You get · " + (partner ? partner.name : "their roster")
+      : "You get";
+    giveSearch.placeholder = activeLeague ? "Search your roster" : "Type a player name";
+    getSearch.placeholder = activeLeague ? "Search their roster" : "Type a player name";
     analyzeButton.disabled = give.length === 0 || get.length === 0;
   }
 
   giveSearch.addEventListener("input", function () { renderSearch("give"); });
   getSearch.addEventListener("input", function () { renderSearch("get"); });
+  tradePartner.addEventListener("change", function () {
+    activePartnerId = tradePartner.value;
+    give.length = 0;
+    get.length = 0;
+    giveSearch.value = "";
+    getSearch.value = "";
+    results.replaceChildren();
+    renderAll();
+  });
+
+  function connectLeague() {
+    const league = JSON.parse(JSON.stringify(DEMO_LEAGUE));
+    league.leagueId = leagueIdInput.value.trim() || DEMO_LEAGUE.leagueId;
+    activeLeague = league;
+    activePartnerId = league.teams.find(function (team) {
+      return team.id !== league.myTeamId;
+    }).id;
+    give.length = 0;
+    get.length = 0;
+    giveSearch.value = "";
+    getSearch.value = "";
+    leagueMessage.textContent = "";
+    saveLeague(league);
+    renderAll();
+  }
+
+  document.getElementById("load-league").addEventListener("click", connectLeague);
+  document.getElementById("demo-league").addEventListener("click", function () {
+    leagueIdInput.value = "";
+    connectLeague();
+  });
+  document.getElementById("disconnect-league").addEventListener("click", function () {
+    try {
+      localStorage.removeItem(storageKey);
+      leagueMessage.textContent = "";
+    } catch (error) {
+      leagueMessage.textContent = "The league was disconnected for this visit, but saved browser data could not be removed.";
+    }
+    activeLeague = null;
+    activePartnerId = null;
+    give.length = 0;
+    get.length = 0;
+    giveSearch.value = "";
+    getSearch.value = "";
+    results.replaceChildren();
+    renderAll();
+  });
 
   function makeFactorBar(label, weight, value) {
     const row = document.createElement("div");
@@ -292,6 +563,112 @@
     }
     return player.name + " projects for " + player.projectionPPG +
       " fantasy points per game and " + player.touchShare + "% of team touches.";
+  }
+
+  function makeLeagueInsights(giveAdjusted, getAdjusted) {
+    if (!activeLeague) return null;
+    const myTeam = findLeagueTeam(activeLeague.myTeamId);
+    const partner = findLeagueTeam(activePartnerId);
+    if (!myTeam || !partner) return null;
+
+    const myAfter = myTeam.roster.filter(function (id) {
+      return give.indexOf(id) === -1;
+    }).concat(get);
+    const partnerAfter = partner.roster.filter(function (id) {
+      return get.indexOf(id) === -1;
+    }).concat(give);
+    const myBeforeRatings = getPositionRatings(myTeam.roster);
+    const myAfterRatings = getPositionRatings(myAfter);
+    const partnerBeforeRatings = getPositionRatings(partner.roster);
+    const partnerAfterRatings = getPositionRatings(partnerAfter);
+    const repairedNeeds = Object.keys(starterSlots).filter(function (position) {
+      return partnerBeforeRatings[position].rating === "Weak" &&
+        partnerAfterRatings[position].rating !== "Weak";
+    });
+    const partnerNewHoles = Object.keys(starterSlots).filter(function (position) {
+      return partnerBeforeRatings[position].rating !== "Weak" &&
+        partnerAfterRatings[position].rating === "Weak";
+    });
+    const myFixedNeeds = Object.keys(starterSlots).filter(function (position) {
+      return myBeforeRatings[position].rating === "Weak" &&
+        myAfterRatings[position].rating !== "Weak";
+    });
+    const myNewHoles = Object.keys(starterSlots).filter(function (position) {
+      return myBeforeRatings[position].rating !== "Weak" &&
+        myAfterRatings[position].rating === "Weak";
+    });
+
+    const card = document.createElement("section");
+    card.className = "league-insights";
+    const fit = document.createElement("article");
+    fit.className = "card";
+    const fitHeading = document.createElement("h2");
+    fitHeading.textContent = "Fit for your team";
+    const points = document.createElement("p");
+    points.className = "fit-points";
+    points.textContent = "Starting lineup projection: " +
+      getStartingProjection(myTeam.roster).toFixed(1) + " before · " +
+      getStartingProjection(myAfter).toFixed(1) + " after";
+    const fitReason = document.createElement("p");
+    if (myFixedNeeds.length && myNewHoles.length) {
+      fitReason.textContent = "Fixes " + myFixedNeeds.join(", ") + ", but creates a new weak " +
+        myNewHoles.join(", ") + " position.";
+    } else if (myFixedNeeds.length) {
+      fitReason.textContent = "Fixes your weak " + myFixedNeeds.join(", ") + " position" +
+        (myFixedNeeds.length === 1 ? "" : "s") + " without creating a new hole.";
+    } else if (myNewHoles.length) {
+      fitReason.textContent = "Creates a new weak " + myNewHoles.join(", ") + " position.";
+    } else {
+      fitReason.textContent = "Does not fix a weak starting position or create a new hole.";
+    }
+    fit.append(fitHeading, points, fitReason);
+
+    const acceptance = document.createElement("article");
+    acceptance.className = "card acceptance-card";
+    const incomingValue = giveAdjusted;
+    const outgoingValue = getAdjusted;
+    const valueDifference = (incomingValue - outgoingValue) /
+      Math.max(incomingValue, outgoingValue, 1);
+    const styleAdjustment = {
+      Active: 8,
+      Picky: -5,
+      "Rarely trades": -13
+    }[partner.tradeStyle] || 0;
+    const acceptanceChance = Math.round(clamp(
+      50 + valueDifference * 35 + repairedNeeds.length * 10 -
+      partnerNewHoles.length * 10 + styleAdjustment,
+      5,
+      95
+    ));
+    const acceptanceHeading = document.createElement("h2");
+    acceptanceHeading.textContent = "Chance they accept";
+    const chance = document.createElement("strong");
+    chance.className = "acceptance-percent";
+    chance.textContent = acceptanceChance + "%";
+    const meter = document.createElement("div");
+    meter.className = "acceptance-meter";
+    meter.setAttribute("role", "meter");
+    meter.setAttribute("aria-label", "Chance they accept");
+    meter.setAttribute("aria-valuemin", "0");
+    meter.setAttribute("aria-valuemax", "100");
+    meter.setAttribute("aria-valuenow", String(acceptanceChance));
+    const fill = document.createElement("div");
+    fill.style.width = acceptanceChance + "%";
+    meter.append(fill);
+    const acceptanceReason = document.createElement("p");
+    const needReason = repairedNeeds.length
+      ? "it fills their weak " + repairedNeeds.join(", ") + " need"
+      : "it does not fill a weak starting need";
+    const styleReason = partner.tradeStyle === "Active"
+      ? "their Active style is open to deals"
+      : partner.tradeStyle === "Picky"
+        ? "their Picky style is selective"
+        : "their rarely-trading style is cautious about deals";
+    acceptanceReason.textContent = "They receive " + incomingValue + " trade value and send " +
+      outgoingValue + "; " + needReason + ", and " + styleReason + ".";
+    acceptance.append(acceptanceHeading, chance, meter, acceptanceReason);
+    card.append(fit, acceptance);
+    return card;
   }
 
   function analyzeTrade() {
@@ -383,6 +760,9 @@
     });
     results.append(sides);
 
+    const leagueInsights = makeLeagueInsights(giveAdjusted, getAdjusted);
+    if (leagueInsights) results.append(leagueInsights);
+
     const why = document.createElement("div");
     why.className = "why-card";
     const whyHeading = document.createElement("h2");
@@ -457,6 +837,11 @@
     });
   });
 
+  leagueIdInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") connectLeague();
+  });
+
+  loadSavedLeague();
   renderAll();
   showView();
 })();
