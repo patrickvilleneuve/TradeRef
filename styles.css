@@ -164,6 +164,10 @@ h1 {
   background: var(--surface);
 }
 
+.team-matchup[hidden] {
+  display: none;
+}
+
 .team-matchup label,
 .league-id-field {
   font-weight: 750;
