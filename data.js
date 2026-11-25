@@ -220,17 +220,20 @@ const DEMO_LEAGUE = {
   })
 };
 
-const COMMUNITY_TRADE_VALUES = PLAYERS
-  .slice()
-  .sort(function (a, b) {
-    return b.projectionPPG - a.projectionPPG;
-  })
-  .slice(0, 15)
-  .map(function (player, index) {
-    return {
-      playerId: player.id,
-      value: 100 - index * 3,
-      weeklyChange: [3, -2, 1, -1, 4, -3, 2, -1, 1, -2, 3, -4, 1, -1, 2][index],
-      tradesLogged: 620 - index * 24
-    };
-  });
+const COMMUNITY_TRADE_VALUES = [
+  { playerId: 13, value: 98, weeklyChange: 4, tradesLogged: 612 },
+  { playerId: 33, value: 95, weeklyChange: -2, tradesLogged: 587 },
+  { playerId: 14, value: 91, weeklyChange: 3, tradesLogged: 541 },
+  { playerId: 34, value: 90, weeklyChange: 1, tradesLogged: 530 },
+  { playerId: 15, value: 86, weeklyChange: -1, tradesLogged: 498 },
+  { playerId: 116, value: 83, weeklyChange: 5, tradesLogged: 476 },
+  { playerId: 16, value: 81, weeklyChange: -3, tradesLogged: 451 },
+  { playerId: 132, value: 79, weeklyChange: 2, tradesLogged: 427 },
+  { playerId: 76, value: 76, weeklyChange: -2, tradesLogged: 398 },
+  { playerId: 148, value: 74, weeklyChange: 1, tradesLogged: 376 },
+  { playerId: 92, value: 72, weeklyChange: -4, tradesLogged: 352 },
+  { playerId: 35, value: 69, weeklyChange: 3, tradesLogged: 331 },
+  { playerId: 75, value: 67, weeklyChange: -1, tradesLogged: 308 },
+  { playerId: 1, value: 65, weeklyChange: 2, tradesLogged: 286 },
+  { playerId: 180, value: 62, weeklyChange: -2, tradesLogged: 263 }
+];
