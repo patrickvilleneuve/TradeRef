@@ -2,9 +2,9 @@
 
 ## 1. The idea
 
-- **Customer:** TradeRef is for casual and intermediate fantasy football managers in 10–12 team redraft leagues who want help evaluating player-for-player trade offers.
+- **Customer:** 
 - **Problem:** A manager may have to compare one high-value player with several less valuable players, account for current production and injury risk, and decide quickly whether an offer helps their roster. Today, they may rely on a league chat, general player rankings, several separate websites, or their own judgment. Those sources can be hard to compare and may not explain a recommendation in one place.
-- **Solution:** TradeRef lets a manager choose the players they would give and receive, then shows a grade for each player, totals both sides, and gives a winning, losing, or fair verdict. The grade considers rest-of-season projections, current and previous-season points, usage, injury status, and teammate injuries. Sample trades let a new visitor see how the tool works without having to build an offer first.
+- **Solution:** TradeRef lets a manager choose the players they would give and receive, then shows a grade for each player, totals both sides, and gives a winning, losing, or fair verdict. The grade considers rest-of-season projections, current and previous-season points, usage, injury status, and teammate injuries. For the trade totals, it uses **value above replacement**: each player's grade is reduced by 45, with a minimum trade value of zero. This means a bench-level player near waiver quality adds little or no value just because they are part of a multi-player offer. The analyzer then applies its consolidation bonus; totals within 5% are labeled fair. Sample buttons load and analyze example trades automatically.
 - **Revenue:** The prototype has no revenue or payment feature. A possible model is **freemium**: keep basic trade comparisons free and charge a modest subscription for premium features such as saved rosters, customized league scoring, trade history, and more detailed analysis. Sponsorships could be considered later, but should not compromise trust in the recommendations.
 
 The current site is a demonstration, not a live fantasy-football service: its players and statistics are fictional, and its scores are calculated from sample data rather than current player information.
@@ -13,7 +13,7 @@ The current site is a demonstration, not a live fantasy-football service: its pl
 
 TradeRef changes the **information and decision-making** part of the fantasy manager's value chain. Instead of manually comparing players across sources, a manager could enter an offer and receive a consistent side-by-side comparison. A clear explanation and verdict could reduce the time and effort needed to make a decision.
 
-The website is a **digital distribution channel**: managers can access it in a browser without installing an app. Software and cloud services could support **scale**, serving more users without having to produce each comparison manually. The product's intended **differentiation** is the combination of quick comparison, injury and usage context, and an understandable explanation—not simply displaying another list of rankings.
+The website is a **digital distribution channel**: managers can access it in a browser without installing an app. Software and cloud services could support **scale**, serving more users without having to produce each comparison manually. The product's intended **differentiation** is the combination of quick comparison, injury and usage context, value-above-replacement totals that discount waiver-level players, and an understandable explanation—not simply displaying another list of rankings.
 
 To deliver that value reliably, a real service would need accurate, timely player data and a transparent way of turning it into useful guidance. The prototype illustrates the interface and a sample grading approach, but does not yet provide those real-world capabilities.
 
@@ -44,7 +44,7 @@ The business could buy **SaaS** services for support, analytics, and team collab
 
 ## 6. Risks and ethics
 
-- **Bad or stale advice:** Inaccurate projections or injury information could lead a manager to make a poor trade. Show when data was updated, explain the main factors, and make uncertainty clear.
+- **Bad or stale advice:** Inaccurate projections or injury information could lead a manager to make a poor trade. The fixed 45-point replacement baseline may also be a poor fit for some league sizes, roster rules, or scoring formats. Show when data was updated, explain the main factors and baseline, and make uncertainty clear; a real service could let managers adjust league settings.
 - **Overconfidence:** A score is an estimate, not a guarantee of future performance. Avoid presenting a verdict as certainty and let users inspect the player-level reasoning.
 - **Privacy:** A real product should collect as little data as possible, explain its use, secure it, and provide deletion and export options. Do not share identifiable league or roster data without permission.
 - **Conflicts of interest:** Ads, sponsorships, or paid rankings could undermine trust. Clearly label paid placements and keep them separate from trade grades.
