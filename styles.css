@@ -147,6 +147,10 @@ h1 {
   margin: 16px 0 24px;
 }
 
+.example-row[hidden] {
+  display: none;
+}
+
 .team-matchup {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

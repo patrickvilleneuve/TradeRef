@@ -141,29 +141,81 @@ PLAYERS.push.apply(PLAYERS, makeExtraPlayers("RB", 40, 61));
 PLAYERS.push.apply(PLAYERS, makeExtraPlayers("WR", 64, 101));
 PLAYERS.push.apply(PLAYERS, makeExtraPlayers("TE", 16, 165));
 
+const FANTASY_TEAM_NAMES = [
+  "Fourth and Long",
+  "Waiver Wire Warriors",
+  "End Zone Architects",
+  "The Bye Week Bandits",
+  "Sunday Scaries",
+  "Bench Mob",
+  "Red Zone Raccoons",
+  "Pigskin Pioneers",
+  "Huddle and Flow",
+  "Touchdown Tacticians",
+  "The Audible Alliance",
+  "Goal Line Gardeners"
+];
+
+const DRAFT_ROUNDS = [
+  "QB", "RB", "WR", "RB", "WR", "TE", "WR", "RB",
+  "WR", "RB", "WR", "TE", "WR", "RB", "WR"
+];
+
+const draftTeams = FANTASY_TEAM_NAMES.map(function (_, teamIndex) {
+  return { id: "team-" + (teamIndex + 1), roster: [] };
+});
+
+const draftPools = ["QB", "RB", "WR", "TE"].reduce(function (pools, position) {
+  pools[position] = PLAYERS.filter(function (player) {
+    return player.position === position;
+  }).sort(function (a, b) {
+    return b.projectionPPG - a.projectionPPG;
+  });
+  return pools;
+}, {});
+const draftedByPosition = { QB: 0, RB: 0, WR: 0, TE: 0 };
+
+DRAFT_ROUNDS.forEach(function (position, roundIndex) {
+  for (let pick = 0; pick < draftTeams.length; pick++) {
+    const teamIndex = roundIndex % 2 === 0 ? pick : draftTeams.length - 1 - pick;
+    const player = draftPools[position][draftedByPosition[position]++];
+    draftTeams[teamIndex].roster.push(player.id);
+  }
+});
+
+function exchangeDraftPicks(position, firstRank, secondRank) {
+  const firstPlayerId = draftPools[position][firstRank - 1].id;
+  const secondPlayerId = draftPools[position][secondRank - 1].id;
+  const firstTeam = draftTeams.find(function (team) {
+    return team.roster.indexOf(firstPlayerId) !== -1;
+  });
+  const secondTeam = draftTeams.find(function (team) {
+    return team.roster.indexOf(secondPlayerId) !== -1;
+  });
+  const firstPlayerIndex = firstTeam.roster.indexOf(firstPlayerId);
+  const secondPlayerIndex = secondTeam.roster.indexOf(secondPlayerId);
+  firstTeam.roster[firstPlayerIndex] = secondPlayerId;
+  secondTeam.roster[secondPlayerIndex] = firstPlayerId;
+}
+
+// Give the demo manager position-specific draft priorities while retaining a balanced snake draft.
+exchangeDraftPicks("RB", 12, 13);
+exchangeDraftPicks("WR", 13, 8);
+exchangeDraftPicks("TE", 12, 8);
+
 const DEMO_LEAGUE = {
   leagueId: "DEMO-281",
   myTeamId: "team-1",
-  teams: TEAMS.slice(0, 12).map(function (name, teamIndex) {
-    const positionCounts = { QB: 1, RB: 5, WR: 7, TE: 2 };
-    const roster = Object.keys(positionCounts).reduce(function (playerIds, position) {
-      const positionPlayers = PLAYERS.filter(function (player) {
-        return player.position === position;
-      });
-      const count = positionCounts[position];
-      const teamPlayers = positionPlayers.slice(teamIndex * count, (teamIndex + 1) * count);
-      return playerIds.concat(teamPlayers.map(function (player) { return player.id; }));
-    }, []);
-
+  teams: draftTeams.map(function (team, teamIndex) {
     return {
-      id: "team-" + (teamIndex + 1),
-      name: name,
+      id: team.id,
+      name: FANTASY_TEAM_NAMES[teamIndex],
       managerName: teamIndex === 0
         ? "You"
         : ["Avery", "Jordan", "Morgan", "Riley", "Casey", "Quinn", "Emery", "Reese", "Skyler", "Tatum", "Parker"][teamIndex - 1],
       record: ["7-3", "6-4", "6-4", "5-5", "5-5", "4-6", "7-3", "3-7", "6-4", "4-6", "5-5", "3-7"][teamIndex],
       tradeStyle: ["Active", "Picky", "Rarely trades", "Active", "Picky", "Rarely trades", "Picky", "Active", "Rarely trades", "Active", "Picky", "Rarely trades"][teamIndex],
-      roster: roster
+      roster: team.roster
     };
   })
 };

@@ -56,7 +56,7 @@
   let activePartnerId = null;
 
   const starterSlots = { QB: 1, RB: 2, WR: 2, TE: 1 };
-  const storageKey = "traderef-loaded-league";
+  const storageKey = "traderef-loaded-league-v2";
 
   function clamp(value, minimum, maximum) {
     return Math.max(minimum, Math.min(maximum, value));
