@@ -219,3 +219,18 @@ const DEMO_LEAGUE = {
     };
   })
 };
+
+const COMMUNITY_TRADE_VALUES = PLAYERS
+  .slice()
+  .sort(function (a, b) {
+    return b.projectionPPG - a.projectionPPG;
+  })
+  .slice(0, 15)
+  .map(function (player, index) {
+    return {
+      playerId: player.id,
+      value: 100 - index * 3,
+      weeklyChange: [3, -2, 1, -1, 4, -3, 2, -1, 1, -2, 3, -4, 1, -1, 2][index],
+      tradesLogged: 620 - index * 24
+    };
+  });

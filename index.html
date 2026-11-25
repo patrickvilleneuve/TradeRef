@@ -19,6 +19,7 @@
       <a href="#home">Home</a>
       <a href="#analyze">Analyze</a>
       <a href="#my-league">My League</a>
+      <a href="#community">Community</a>
       <a href="#how-it-works">How it works</a>
     </nav>
   </header>
@@ -148,7 +149,92 @@
     </section>
 
     <!-- =======================================================
-         VIEW 4: HOW IT WORKS
+         VIEW 4: COMMUNITY
+         ======================================================= -->
+    <section id="community" data-view hidden>
+      <h1>Community</h1>
+      <p class="lead">See how more managers make TradeRef's trade insights smarter for everyone.</p>
+
+      <div class="community-layout">
+        <section class="card community-growth" aria-labelledby="community-growth-heading">
+          <h2 id="community-growth-heading">TradeRef's network effect</h2>
+          <label for="manager-slider">Managers using TradeRef</label>
+          <div class="manager-count"><output id="manager-count">1,000</output> managers</div>
+          <input type="range" id="manager-slider" min="1000" max="500000" step="1000" value="1000">
+          <div class="slider-endpoints"><span>1,000</span><span>500,000</span></div>
+
+          <div class="community-metrics">
+            <article class="community-metric">
+              <div class="community-metric-heading">
+                <h3>Trades logged per week</h3>
+                <output id="weekly-trades">240</output>
+              </div>
+              <div class="network-bar" id="weekly-trades-track" role="progressbar" aria-label="Trades logged per week" aria-valuemin="0" aria-valuemax="120000" aria-valuenow="240">
+                <span id="weekly-trades-bar"></span>
+              </div>
+            </article>
+            <article class="community-metric">
+              <div class="community-metric-heading">
+                <h3>“Chance they accept” prediction accuracy</h3>
+                <output id="prediction-accuracy">55.2%</output>
+              </div>
+              <div class="network-bar" id="prediction-accuracy-track" role="progressbar" aria-label="Chance-they-accept prediction accuracy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="55.2">
+                <span id="prediction-accuracy-bar"></span>
+              </div>
+            </article>
+            <article class="community-metric">
+              <div class="community-metric-heading">
+                <h3>Players with a community trade value</h3>
+                <output id="valued-player-count">1</output>
+              </div>
+              <div class="network-bar" id="valued-player-count-track" role="progressbar" aria-label="Players with a community trade value" aria-valuemin="0" aria-valuemax="180" aria-valuenow="17">
+                <span id="valued-player-count-bar"></span>
+              </div>
+            </article>
+          </div>
+          <p class="community-note">Every accepted or rejected trade teaches TradeRef what real managers value, so predictions get better for everyone.</p>
+        </section>
+
+        <section class="card community-league" aria-labelledby="community-league-heading">
+          <h2 id="community-league-heading">Your league</h2>
+          <p class="league-member-count" id="league-member-count" aria-live="polite">4 of 12 managers in your league use TradeRef</p>
+          <div class="league-member-controls">
+            <button type="button" class="member-button" id="remove-league-member" aria-label="Remove a TradeRef manager from your league">−</button>
+            <span>League members</span>
+            <button type="button" class="member-button" id="add-league-member" aria-label="Add a TradeRef manager to your league">+</button>
+          </div>
+          <ul class="community-features" aria-label="League features">
+            <li class="community-feature locked" id="trade-interest-feature" data-unlock-at="6" aria-disabled="true">
+              <span class="feature-lock" aria-hidden="true">🔒</span>
+              <span>See which managers want to trade</span>
+            </li>
+            <li class="community-feature locked" id="trade-finder-feature" data-unlock-at="12" aria-disabled="true">
+              <span class="feature-lock" aria-hidden="true">🔒</span>
+              <span>League-wide trade finder</span>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <section class="card community-values-card" aria-labelledby="community-values-heading">
+        <h2 id="community-values-heading">Community trade values</h2>
+        <p class="muted">Top 15 players by community value, based on fictional trade activity.</p>
+        <table class="community-table">
+          <thead>
+            <tr>
+              <th scope="col">Player</th>
+              <th scope="col">Community value</th>
+              <th scope="col">Change this week</th>
+              <th scope="col">Trades logged</th>
+            </tr>
+          </thead>
+          <tbody id="community-values"></tbody>
+        </table>
+      </section>
+    </section>
+
+    <!-- =======================================================
+         VIEW 5: HOW IT WORKS
          ======================================================= -->
     <section id="how-it-works" data-view hidden>
       <h1>How it works</h1>

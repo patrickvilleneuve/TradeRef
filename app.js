@@ -57,6 +57,12 @@
 
   const starterSlots = { QB: 1, RB: 2, WR: 2, TE: 1 };
   const storageKey = "traderef-loaded-league-v2";
+  const managerSlider = document.getElementById("manager-slider");
+  const managerCountOutput = document.getElementById("manager-count");
+  const leagueMateCountOutput = document.getElementById("league-member-count");
+  const removeLeagueMateButton = document.getElementById("remove-league-member");
+  const addLeagueMateButton = document.getElementById("add-league-member");
+  let leagueMateCount = 4;
 
   function clamp(value, minimum, maximum) {
     return Math.max(minimum, Math.min(maximum, value));
@@ -138,6 +144,103 @@
 
   function findPlayer(id) {
     return PLAYERS.find(function (player) { return player.id === id; });
+  }
+
+  function setCommunityMeter(trackId, fillId, value, maximum) {
+    const track = document.getElementById(trackId);
+    const fill = document.getElementById(fillId);
+    track.setAttribute("aria-valuenow", String(value));
+    fill.style.width = clamp((value / maximum) * 100, 0, 100) + "%";
+  }
+
+  function updateCommunityNetwork() {
+    const managers = Number(managerSlider.value);
+    const weeklyTrades = Math.round(managers * 0.24);
+    const accuracy = 55 + 30 * (1 - Math.exp(-managers / 140000));
+    const valuedPlayers = 15 + Math.round(
+      (PLAYERS.length - 15) * (1 - Math.exp(-managers / 100000))
+    );
+
+    managerCountOutput.textContent = managers.toLocaleString("en-US");
+    document.getElementById("weekly-trades").textContent =
+      weeklyTrades.toLocaleString("en-US");
+    document.getElementById("prediction-accuracy").textContent =
+      accuracy.toFixed(1) + "%";
+    document.getElementById("valued-player-count").textContent =
+      valuedPlayers.toLocaleString("en-US");
+
+    setCommunityMeter("weekly-trades-track", "weekly-trades-bar", weeklyTrades, 120000);
+    setCommunityMeter("prediction-accuracy-track", "prediction-accuracy-bar", accuracy, 100);
+    setCommunityMeter(
+      "valued-player-count-track",
+      "valued-player-count-bar",
+      valuedPlayers,
+      PLAYERS.length
+    );
+  }
+
+  function setLeagueFeature(featureId, unlocked) {
+    const feature = document.getElementById(featureId);
+    feature.className = "community-feature " + (unlocked ? "unlocked" : "locked");
+    feature.setAttribute("aria-disabled", String(!unlocked));
+    feature.querySelector(".feature-lock").textContent = unlocked ? "✓" : "🔒";
+  }
+
+  function updateCommunityLeague() {
+    leagueMateCountOutput.textContent =
+      leagueMateCount + " of 12 managers in your league use TradeRef";
+    removeLeagueMateButton.disabled = leagueMateCount <= 1;
+    addLeagueMateButton.disabled = leagueMateCount >= 12;
+    setLeagueFeature("trade-interest-feature", leagueMateCount >= 6);
+    setLeagueFeature("trade-finder-feature", leagueMateCount >= 12);
+  }
+
+  function renderCommunityValues() {
+    const tableBody = document.getElementById("community-values");
+    tableBody.replaceChildren();
+
+    COMMUNITY_TRADE_VALUES.slice().sort(function (a, b) {
+      return b.value - a.value;
+    }).forEach(function (entry) {
+      const player = findPlayer(entry.playerId);
+      if (!player) throw new Error("Community trade value references an unknown player.");
+
+      const row = document.createElement("tr");
+      const playerCell = document.createElement("td");
+      playerCell.className = "community-player-cell";
+      playerCell.setAttribute("data-label", "Player");
+      const playerName = document.createElement("strong");
+      playerName.textContent = player.name;
+      const playerPosition = document.createElement("span");
+      playerPosition.textContent = player.position;
+      playerCell.append(playerName, playerPosition);
+
+      const valueCell = document.createElement("td");
+      valueCell.setAttribute("data-label", "Community value");
+      valueCell.textContent = String(entry.value);
+
+      const changeCell = document.createElement("td");
+      const direction = entry.weeklyChange >= 0 ? "up" : "down";
+      changeCell.className = "community-change " + direction;
+      changeCell.setAttribute(
+        "aria-label",
+        (entry.weeklyChange > 0 ? "+" : "") + entry.weeklyChange + " this week"
+      );
+      changeCell.setAttribute("data-label", "Change this week");
+      const arrow = document.createElement("span");
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = entry.weeklyChange >= 0 ? "↑" : "↓";
+      const change = document.createElement("span");
+      change.setAttribute("aria-hidden", "true");
+      change.textContent = (entry.weeklyChange > 0 ? "+" : "") + entry.weeklyChange;
+      changeCell.append(arrow, change);
+
+      const tradesCell = document.createElement("td");
+      tradesCell.setAttribute("data-label", "Trades logged");
+      tradesCell.textContent = entry.tradesLogged.toLocaleString("en-US");
+      row.append(playerCell, valueCell, changeCell, tradesCell);
+      tableBody.append(row);
+    });
   }
 
   function findLeagueTeam(teamId) {
@@ -841,6 +944,19 @@
     if (event.key === "Enter") connectLeague();
   });
 
+  managerSlider.addEventListener("input", updateCommunityNetwork);
+  removeLeagueMateButton.addEventListener("click", function () {
+    leagueMateCount = Math.max(1, leagueMateCount - 1);
+    updateCommunityLeague();
+  });
+  addLeagueMateButton.addEventListener("click", function () {
+    leagueMateCount = Math.min(12, leagueMateCount + 1);
+    updateCommunityLeague();
+  });
+
+  renderCommunityValues();
+  updateCommunityNetwork();
+  updateCommunityLeague();
   loadSavedLeague();
   renderAll();
   showView();
