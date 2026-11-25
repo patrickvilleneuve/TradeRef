@@ -1,56 +1,65 @@
 # Project log
 
-Keep this up to date as you go — a few lines per work session is enough. It's much harder to reconstruct at the end.
-
-**Team name:** Patrick Villeneuve (Individual Project)
+**Team name:** Patrick Villeneuve (individual project)
 **Startup name:** TradeRef
 **Live site link:** https://patrickvilleneuve.github.io/TradeRef/
 
----
-
 ## Work sessions
 
-Copy this block for each session.
+### Session 1 — Nov 24 — driver: Patrick
+- **Goal for this session:** Turn on GitHub Pages, rebrand the template as TradeRef, add fake player data, and build the trade analyzer.
+- **Key prompts we gave Copilot** (shortened):
+  1. Create .github/copilot-instructions.md with the project rules.
+  2. Rebrand as TradeRef, create a new home page and navigation, and add 60 fictional players in data.js.
+  3. Build the trade analyzer with player scores, grades, a consolidation bonus, a verdict, reasons, and three example trades.
+  4. Fix the losing example because it says "You're winning."
+  5. Explain why Git would not let me commit my changes.
+  6. Use value above replacement, with a player's trade value equal to the score minus 45, for bench players and make the examples run automatically.
+  7. Update the business case.
+- **What worked:** The home page, fictional player search, trade analyzer, player grades, and example trades work. The site went live through GitHub Pages.
+- **What broke, and how we fixed it:** The losing example said winning, so we changed its players. Git could not commit because the codespace and GitHub had different histories; Copilot pulled the GitHub changes into the codespace first. A trade with two bench players looked like a win, so we changed trade totals to use value above replacement.
+- **Committed?** Yes. Commits were "Update business case" (this included website code even though the message was wrong) and "Fixed trade totals to use value above replacement."
 
-### Session — 2026-11-24 — driver: Patrick
-
-- **Goal for this session:** Correct the losing-trade example, resolve the Git sync issue, and document the business case.
-- **Key prompts we gave Copilot** (paste the important ones):
-  1. “When I click the ‘Try an example’ button for the losing trade, the verdict says ‘You're winning this trade’. It should say ‘You're losing this trade’.”
-  2. “Explain why it is not letting me commit my changes, can you help me fix this so I can update the business case and the business log”
-  3. “Update the business case”
-- **What worked:** Checked that the verdict already compares “You get” against “You give” in the correct direction. Adjusted the losing example and verified that it now lands on a loss by more than 5%, while the winning example remains a win and the fair example stays within 5%. Rebased the local commit onto the remote branch to resolve the divergence without conflicts. Filled in the business case using the current prototype and identified which capabilities are only possibilities for a real service.
-- **What broke, and how we fixed it:** The losing example originally gave away one high-value player for three lower-value players, whose combined value made the offer look favorable. Reducing the return to two low-value players makes the example a clear loss without changing the score formula. Git showed a clean working tree and diverged local/remote history; rebasing brought the remote change into the local branch.
-- **Committed?** Initially no; this work was later included in `b1fd8b3` (`Fixed trade totals to use value above replacement`).
-
-### Session — 2026-11-24 — driver: Patrick
-
-- **Goal for this session:** Stop bench-level players from being counted at full value in trade totals, keep player grades unchanged, and update the business case.
-- **Key prompts we gave Copilot** (paste the important ones):
-  1. “The trade totals overvalue bench players… Use ‘value above replacement’: a player's trade value = their score minus 45 (never below 0). Add up those values for each side, then apply the consolidation bonus.”
-  2. “Make the 3 example buttons run the analysis automatically after loading the players. Then check all 3 examples still give winning, fair and losing.”
-  3. “Update Business Case”
-- **What worked:** Side totals now sum each player's value above replacement while leaving their 0–100 scores, letter grades, consolidation bonus, and 5% fair threshold intact. Player cards show “Trade value,” the How it works section explains the 45-point baseline, and example buttons analyze immediately. Verified all three examples still return the intended verdicts. The Malik Rowan for Grant Lowell and Miles Becker trade now returns a loss (47 value points given versus 12 received after the consolidation bonus). Updated the business case to describe the calculation and its limitations.
-- **What broke, and how we fixed it:** Previously, several bench-level players contributed their full scores to a side total, which could make them appear more valuable than one strong starter. Subtracting the 45-point replacement baseline from each score, with a floor of zero, reduces that distortion.
-- **Committed?** The feature update was committed as `b1fd8b3` (`Fixed trade totals to use value above replacement`). The latest business case and project log edits are not yet committed.
-
----
+### Session 2 — Nov 25 — driver: Patrick
+- **Goal for this session:** Build My League and the Community page, then rewrite the business case to match the rubric.
+- **Key prompts we gave Copilot** (shortened):
+  1. Build My League with demo league connection, team needs, fit for your team, and chance they accept.
+  2. Fix the super-team roster with a snake draft, give the fantasy teams their own names, and hide example buttons while a league is loaded.
+  3. Hide the Trading with box with no league loaded.
+  4. Add a Community page with a managers slider, a league card that unlocks features, and a community trade values table.
+  5. Make Community trade values uneven and mix the positions.
+  6. Rewrite BUSINESS_CASE.md section by section to match the rubric.
+  7. Rewrite this project log.
+- **What worked:** Demo league connection, balanced team needs, fit for your team, chance they accept, the Community slider, league unlock card, and community trade values all work on the live site.
+- **What broke, and how we fixed it:** See the "Things that broke" table below.
+- **Committed?** Yes. Commits were "Updated business case and project log," "Added my league, team fit and chance they accept," "Balanced demo league rosters and renamed the teams," "Hid trading with box when no league is loaded," "Added community page showing the network effect," "Made community trade values look realistic," "Rewrote business case to match the rubric," and "Added AI use line to business case."
 
 ## Things that broke (running list)
 
 | Date | What went wrong | What we tried | What finally fixed it |
 |---|---|---|---|
-| 2026-11-24 | The losing sample trade was graded as a win. | Checked the give/get comparison and the example player values. | Kept the verdict formula and changed the losing example to give one star player for two low-value players; verified all three sample outcomes. |
-| 2026-11-24 | Local and remote Git branches had diverged, preventing a clean sync. | Checked the working tree, hooks, and commits on both branches. | Rebased the local commit onto the remote branch; it completed without conflicts. |
-| 2026-11-24 | Bench players were counted at full value in multi-player trade totals. | Compared raw-score totals with a replacement-level baseline. | Changed side totals to use each player's score minus 45, floored at zero, and verified the example verdicts. |
+| Nov 24 | Losing example said "You're winning." | Checked whether the verdict was backwards. | Changed the losing example's players. |
+| Nov 24 | Git would not let me commit. | Asked Copilot why. | Copilot pulled the GitHub changes into the codespace first. |
+| Nov 24 | A trade with two bench players said "You're winning." | Tested the trade by hand. | Used value above replacement, score minus 45. |
+| Nov 25 | My team got every top player, so Team needs said Strong everywhere and Fit could never show a fix. | Checked the roster on the live site. | Used snake-draft rosters and made my team weak at RB. |
+| Nov 25 | Fantasy team names were the same as football team names. | Noticed it on the roster page. | Gave the fantasy teams their own names. |
+| Nov 25 | Example buttons used players who were not on either roster while a league was loaded. | Tested the analyzer with a league loaded. | Hid the example buttons while a league is loaded. |
+| Nov 25 | An empty Trading with dropdown showed with no league loaded. | Checked the Analyze page after disconnecting. | Hid the box unless a league is loaded. |
+| Nov 25 | Community trade values dropped in perfect steps and the top 4 were all QBs. | Looked at the table on the live site. | Used uneven values with mixed positions. |
+| Nov 25 | The business case commit did not reach GitHub. | Checked GitHub and found the old version. | Clicked Sync Changes after committing. |
 
 ## What a real version would need
 
-Everything we wanted but faked or left out — real logins, a real database, payments, security, moderation, an app, staff, etc. For each one, say **why** it's needed and roughly **how hard or expensive** you think it would be.
-
-| Feature we faked or skipped | Why a real company would need it | How hard / expensive? |
+| Feature we faked or skipped | Real reason | Rough cost/difficulty |
 |---|---|---|
-| | | |
+| Real league import through fantasy platforms' APIs such as Sleeper's public API | It would save managers from entering rosters manually and keep teams, players and leagues in sync. | Medium cost and medium difficulty; public API limits or access changes could require support and a manual fallback. |
+| A licensed sports data feed for injuries, analyst projections and usage | Timely, consistent, licensed data is needed for useful grades and to avoid relying on manually entered information. | Ongoing subscription cost and medium difficulty; expected to be one of the largest costs. |
+| User accounts and logins | Accounts would identify users, protect saved settings and allow a league or subscription to follow a person across devices. | Low to medium cost and medium difficulty; needs login, password recovery, security and account deletion. |
+| A shared database because trade history only saves in one browser now | Shared storage would keep saved leagues and trade outcomes available across devices and support community predictions. | Low to medium monthly cost and medium difficulty; needs schema design, privacy controls and backups. |
+| Subscription payments | Payments would support free, Pro and League Pass plans and keep the product from relying on sportsbook ads. | Low monthly setup cost, plus a percentage of each payment, and medium difficulty for billing and refunds. |
+| A real chance they accept model trained on real trades | The prototype estimate is made up; a real model needs manager responses and trade outcomes to become useful. | High difficulty and medium to high cost; a data scientist or skilled analyst would be needed to build and test it. |
+| Protecting community values from people gaming them | Fake or repeated trade reports could push community values in the wrong direction and reduce trust. | Medium difficulty and ongoing cost; needs rate limits, anomaly checks, moderation and transparent rules. |
+| Customer support during the season | Trade deadlines and Sunday injury changes create urgent questions, while data or import problems need quick help. | Low to medium ongoing cost; may need one part-time support person and written help articles at first. |
 
 ## Reflection (fill in at the end)
 
