@@ -117,6 +117,47 @@ h1 {
   color: var(--muted);
 }
 
+.free-plan-banner {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid #b7e4c7;
+  border-radius: 10px;
+  background: #effaf3;
+  color: #166534;
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.free-plan-banner a {
+  color: #166534;
+  font-weight: 850;
+}
+
+.scoring-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 18px;
+}
+
+.scoring-button {
+  padding: 8px 13px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--navy-2);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.scoring-button.selected {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #fff;
+}
+
 .button {
   display: inline-block;
   margin-top: 8px;
@@ -318,6 +359,27 @@ h1 {
 
 .trade-results {
   margin-top: 28px;
+}
+
+.fair-suggestion {
+  margin-top: 16px;
+}
+
+.fair-suggestion-card {
+  margin-top: 10px;
+}
+
+.fair-suggestion-card h3 {
+  margin: 0 0 4px;
+}
+
+.fair-suggestion-card p {
+  margin: 4px 0;
+  color: var(--muted);
+}
+
+.fair-suggestion-card .button {
+  margin-top: 10px;
 }
 
 .verdict-banner {

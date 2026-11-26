@@ -45,6 +45,8 @@
   const analyzeButton = document.getElementById("analyze-button");
   const resetButton = document.getElementById("reset-button");
   const results = document.getElementById("trade-results");
+  const freePlanBanner = document.getElementById("free-plan-banner");
+  const scoringButtons = document.querySelectorAll("[data-scoring]");
   const exampleRow = document.getElementById("example-row");
   const matchup = document.getElementById("team-matchup");
   const tradePartner = document.getElementById("trade-partner");
@@ -54,6 +56,9 @@
   const leagueMessage = document.getElementById("league-message");
   let activeLeague = null;
   let activePartnerId = null;
+  let freeAnalysesRemaining = 3;
+  let scoringFormat = "Half-PPR";
+  let hasAnalyzedTrade = false;
 
   const starterSlots = { QB: 1, RB: 2, WR: 2, TE: 1 };
   const storageKey = "traderef-loaded-league-v2";
@@ -79,6 +84,37 @@
     return clamp((value / maximum) * 100, 0, 100);
   }
 
+  function estimatedReceptionsPerGame(player) {
+    const receptionRate = {
+      QB: 0,
+      RB: 0.15,
+      WR: 0.65,
+      TE: 0.65
+    }[player.position] || 0;
+    return player.touchesPerGame * receptionRate;
+  }
+
+  function scoringAdjustedPPG(player, points) {
+    const receptionPoints = scoringFormat === "PPR" ? 0.5
+      : scoringFormat === "Standard" ? -0.5
+        : 0;
+    return points + estimatedReceptionsPerGame(player) * receptionPoints;
+  }
+
+  function updateFreePlanBanner() {
+    freePlanBanner.replaceChildren();
+    if (freeAnalysesRemaining > 0) {
+      freePlanBanner.textContent = "Free plan: " + freeAnalysesRemaining +
+        " of 3 analyses left this week";
+      return;
+    }
+    freePlanBanner.append(document.createTextNode("You've used your free analyses. "));
+    const upgradeLink = document.createElement("a");
+    upgradeLink.href = "#pricing";
+    upgradeLink.textContent = "Upgrade to Pro for unlimited";
+    freePlanBanner.append(upgradeLink);
+  }
+
   function getTeammateImpact(note) {
     const match = note.match(/[+-]\s*([0-9]+(?:\.[0-9]+)?)/);
     if (!match) return 0;
@@ -99,11 +135,11 @@
 
   // Single formula function: adjust these weights to tune TradeRef's player grades.
   function calculateTradeValueScore(player) {
-    const projection = percentageFactor(player.projectionPPG, 25);
-    const thisSeason = percentageFactor(player.thisSeasonPPG, 25);
+    const projection = percentageFactor(scoringAdjustedPPG(player, player.projectionPPG), 25);
+    const thisSeason = percentageFactor(scoringAdjustedPPG(player, player.thisSeasonPPG), 25);
     const touches = percentageFactor(player.touchesPerGame, 30);
     const usage = (touches + clamp(player.touchShare, 0, 100)) / 2;
-    const lastSeason = percentageFactor(player.lastSeasonPPG, 25);
+    const lastSeason = percentageFactor(scoringAdjustedPPG(player, player.lastSeasonPPG), 25);
     const injury = calculateInjuryFactor(player);
     const teammateImpact = clamp(50 + getTeammateImpact(player.injuredTeammates) * 8, 0, 100);
 
@@ -317,9 +353,9 @@
       return getRoster(team).filter(function (player) {
         return player.position === position;
       }).sort(function (a, b) {
-        return b.projectionPPG - a.projectionPPG;
+        return scoringAdjustedPPG(b, b.projectionPPG) - scoringAdjustedPPG(a, a.projectionPPG);
       }).slice(0, slotCount).reduce(function (sum, player) {
-        return sum + player.projectionPPG;
+        return sum + scoringAdjustedPPG(player, player.projectionPPG);
       }, 0);
     });
     return teamTotals.reduce(function (sum, total) {
@@ -334,9 +370,9 @@
       const total = roster.filter(function (player) {
         return player.position === position;
       }).sort(function (a, b) {
-        return b.projectionPPG - a.projectionPPG;
+        return scoringAdjustedPPG(b, b.projectionPPG) - scoringAdjustedPPG(a, a.projectionPPG);
       }).slice(0, slotCount).reduce(function (sum, player) {
-        return sum + player.projectionPPG;
+        return sum + scoringAdjustedPPG(player, player.projectionPPG);
       }, 0);
       const average = getLeagueAverage(position);
       const ratio = total / Math.max(average, 1);
@@ -355,9 +391,9 @@
       return total + roster.filter(function (player) {
         return player.position === position;
       }).sort(function (a, b) {
-        return b.projectionPPG - a.projectionPPG;
+        return scoringAdjustedPPG(b, b.projectionPPG) - scoringAdjustedPPG(a, a.projectionPPG);
       }).slice(0, starterSlots[position]).reduce(function (sum, player) {
-        return sum + player.projectionPPG;
+        return sum + scoringAdjustedPPG(player, player.projectionPPG);
       }, 0);
     }, 0);
   }
@@ -370,7 +406,8 @@
     const list = document.createElement("ul");
     players.forEach(function (player) {
       const item = document.createElement("li");
-      item.textContent = player.name + " · " + player.projectionPPG.toFixed(1) + " projected PPG";
+      item.textContent = player.name + " · " +
+        scoringAdjustedPPG(player, player.projectionPPG).toFixed(1) + " projected PPG";
       list.append(item);
     });
     group.append(heading, list);
@@ -396,7 +433,8 @@
       const players = myRoster.filter(function (player) {
         return player.position === position;
       }).sort(function (a, b) {
-        return b.projectionPPG - a.projectionPPG;
+        return scoringAdjustedPPG(b, b.projectionPPG) -
+          scoringAdjustedPPG(a, a.projectionPPG);
       });
       rosterContainer.append(makeRosterGroup(position, players));
     });
@@ -534,6 +572,7 @@
 
   function renderAll() {
     results.hidden = true;
+    hasAnalyzedTrade = false;
     renderLeagueDashboard();
     renderSearch("give");
     renderSearch("get");
@@ -659,6 +698,61 @@
     return { total: raw, raw: raw, bestBonus: 0 };
   }
 
+  function getAdjustedSideTotals(giveIds, getIds) {
+    const giveTotal = sideTotal(giveIds);
+    const getTotal = sideTotal(getIds);
+    let giveAdjusted = giveTotal.total;
+    let getAdjusted = getTotal.total;
+    const giveBest = Math.max.apply(null, giveIds.map(function (id) {
+      return calculateTradeValueScore(findPlayer(id)).score;
+    }));
+    const getBest = Math.max.apply(null, getIds.map(function (id) {
+      return calculateTradeValueScore(findPlayer(id)).score;
+    }));
+
+    if (giveIds.length === 1 && getIds.length > 1 && giveBest > getBest) {
+      giveAdjusted += Math.round(giveBest * 0.08);
+    }
+    if (getIds.length === 1 && giveIds.length > 1 && getBest > giveBest) {
+      getAdjusted += Math.round(getBest * 0.08);
+    }
+    return { giveAdjusted: giveAdjusted, getAdjusted: getAdjusted };
+  }
+
+  function findBalancingSuggestion(giveAdjusted, getAdjusted) {
+    const behindSide = giveAdjusted < getAdjusted ? "give" : "get";
+    const behindIds = behindSide === "give" ? give : get;
+    if (behindIds.length >= 4) return null;
+
+    let availableIds;
+    if (activeLeague) {
+      const sourceTeam = behindSide === "give"
+        ? findLeagueTeam(activeLeague.myTeamId)
+        : findLeagueTeam(activePartnerId);
+      availableIds = sourceTeam ? sourceTeam.roster : [];
+    } else {
+      availableIds = PLAYERS.map(function (player) { return player.id; });
+    }
+
+    const inTrade = new Set(give.concat(get));
+    const possible = availableIds.filter(function (id) {
+      return !inTrade.has(id) && findPlayer(id);
+    }).map(function (id) {
+      const nextGive = behindSide === "give" ? give.concat(id) : give;
+      const nextGet = behindSide === "get" ? get.concat(id) : get;
+      const totals = getAdjustedSideTotals(nextGive, nextGet);
+      const difference = Math.abs(totals.getAdjusted - totals.giveAdjusted) /
+        Math.max(totals.giveAdjusted, totals.getAdjusted, 1) * 100;
+      return { player: findPlayer(id), percentDifference: difference };
+    }).filter(function (candidate) {
+      return candidate.percentDifference <= 5;
+    }).sort(function (a, b) {
+      return a.percentDifference - b.percentDifference;
+    });
+
+    return possible.length ? { side: behindSide, player: possible[0].player } : null;
+  }
+
   function makeReason(player, sideName) {
     if (player.injuryStatus !== "Healthy" && player.expectedWeeksOut > 0) {
       return player.name + " is " + player.injuryStatus + ", with analysts expecting " +
@@ -671,7 +765,8 @@
     if (impact < 0) {
       return player.name + " may lose some opportunity: " + player.injuredTeammates + ".";
     }
-    return player.name + " projects for " + player.projectionPPG +
+    return player.name + " projects for " +
+      scoringAdjustedPPG(player, player.projectionPPG).toFixed(1) +
       " fantasy points per game and " + player.touchShare + "% of team touches.";
   }
 
@@ -900,26 +995,15 @@
     if (persistSavedTrades(nextTrades)) historyNotice.textContent = "";
   }
 
-  function analyzeTrade() {
+  function analyzeTrade(countAnalysis) {
     if (give.length === 0 || get.length === 0) return;
-    const giveTotal = sideTotal(give);
-    const getTotal = sideTotal(get);
-
-    let giveAdjusted = giveTotal.total;
-    let getAdjusted = getTotal.total;
-    const giveBest = Math.max.apply(null, give.map(function (id) {
-      return calculateTradeValueScore(findPlayer(id)).score;
-    }));
-    const getBest = Math.max.apply(null, get.map(function (id) {
-      return calculateTradeValueScore(findPlayer(id)).score;
-    }));
-
-    if (give.length === 1 && get.length > 1 && giveBest > getBest) {
-      giveAdjusted += Math.round(giveBest * 0.08);
+    if (countAnalysis) {
+      freeAnalysesRemaining = Math.max(0, freeAnalysesRemaining - 1);
+      updateFreePlanBanner();
     }
-    if (get.length === 1 && give.length > 1 && getBest > giveBest) {
-      getAdjusted += Math.round(getBest * 0.08);
-    }
+    const adjustedTotals = getAdjustedSideTotals(give, get);
+    const giveAdjusted = adjustedTotals.giveAdjusted;
+    const getAdjusted = adjustedTotals.getAdjusted;
 
     const difference = getAdjusted - giveAdjusted;
     const percentDifference = ((difference / Math.max(giveAdjusted, getAdjusted, 1)) * 100);
@@ -1031,6 +1115,47 @@
     });
     results.append(why);
 
+    if (absolutePercent > 5) {
+      const fairSuggestion = document.createElement("div");
+      fairSuggestion.className = "fair-suggestion";
+      const makeFairButton = makeHistoryButton("Make it fair", "example-button", function () {
+        makeFairButton.disabled = true;
+        const suggestion = findBalancingSuggestion(giveAdjusted, getAdjusted);
+        if (!suggestion) {
+          const message = document.createElement("p");
+          message.className = "muted";
+          message.textContent = "No single player balances this trade. Try removing a player instead.";
+          fairSuggestion.append(message);
+          return;
+        }
+
+        const player = suggestion.player;
+        const grade = calculateTradeValueScore(player).score;
+        const card = document.createElement("article");
+        card.className = "card fair-suggestion-card";
+        const name = document.createElement("h3");
+        name.textContent = player.name;
+        const detail = document.createElement("p");
+        detail.textContent = player.position + " · Score: " + grade +
+          " · Trade value: " + valueAboveReplacement(grade);
+        const addButton = document.createElement("button");
+        addButton.type = "button";
+        addButton.className = "button";
+        addButton.textContent = "Add to trade";
+        addButton.addEventListener("click", function () {
+          (suggestion.side === "give" ? give : get).push(player.id);
+          giveSearch.value = "";
+          getSearch.value = "";
+          renderAll();
+          analyzeTrade(false);
+        });
+        card.append(name, detail, addButton);
+        fairSuggestion.append(card);
+      });
+      fairSuggestion.append(makeFairButton);
+      results.append(fairSuggestion);
+    }
+
     currentAnalyzedTrade = {
       give: give.map(function (id) { return findPlayer(id).name; }),
       get: get.map(function (id) { return findPlayer(id).name; }),
@@ -1058,10 +1183,28 @@
     saveControls.append(saveButton, saveMessage);
     results.append(saveControls);
     results.hidden = false;
+    hasAnalyzedTrade = true;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  analyzeButton.addEventListener("click", analyzeTrade);
+  analyzeButton.addEventListener("click", function () {
+    analyzeTrade(true);
+  });
+
+  scoringButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      const selectedFormat = button.getAttribute("data-scoring");
+      if (scoringFormat === selectedFormat) return;
+      scoringFormat = selectedFormat;
+      scoringButtons.forEach(function (scoringButton) {
+        const selected = scoringButton === button;
+        scoringButton.classList.toggle("selected", selected);
+        scoringButton.setAttribute("aria-pressed", String(selected));
+      });
+      renderLeagueDashboard();
+      if (hasAnalyzedTrade) analyzeTrade(false);
+    });
+  });
 
   resetButton.addEventListener("click", function () {
     give.length = 0;
@@ -1089,7 +1232,7 @@
       getSearch.value = "";
       results.hidden = true;
       renderAll();
-      analyzeTrade();
+      analyzeTrade(false);
     });
   });
 
@@ -1124,6 +1267,7 @@
   });
 
   renderCommunityValues();
+  updateFreePlanBanner();
   loadSavedTrades();
   renderTradeHistory();
   updateCommunityNetwork();

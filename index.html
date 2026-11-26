@@ -65,6 +65,12 @@
          ======================================================= -->
     <section id="analyze" data-view hidden>
       <h1>Analyze</h1>
+      <p class="free-plan-banner" id="free-plan-banner" aria-live="polite"></p>
+      <div class="scoring-controls" role="group" aria-label="Scoring format">
+        <button type="button" class="scoring-button" data-scoring="PPR" aria-pressed="false">PPR</button>
+        <button type="button" class="scoring-button selected" data-scoring="Half-PPR" aria-pressed="true">Half-PPR</button>
+        <button type="button" class="scoring-button" data-scoring="Standard" aria-pressed="false">Standard</button>
+      </div>
       <div class="team-matchup" id="team-matchup" hidden>
         <label for="trade-partner">Trading with</label>
         <select id="trade-partner"></select>
@@ -292,6 +298,7 @@
       <h1>How it works</h1>
       <p class="lead">TradeRef combines six plain-English factors into one player grade.</p>
       <p>For trade comparisons, a player's trade value is their grade minus 45 (minimum 0), estimating the value above a readily available waiver replacement.</p>
+      <p>Use the analyzer's scoring toggle to estimate PPR or Standard points from receptions per game.</p>
       <div class="factor-grid">
         <article class="card">
           <h2>Rest-of-season projection</h2>
