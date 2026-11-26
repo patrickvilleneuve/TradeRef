@@ -62,6 +62,8 @@
   const leagueMateCountOutput = document.getElementById("league-member-count");
   const removeLeagueMateButton = document.getElementById("remove-league-member");
   const addLeagueMateButton = document.getElementById("add-league-member");
+  const prototypeDialog = document.getElementById("prototype-dialog");
+  const closePrototypeDialog = document.getElementById("close-prototype-dialog");
   let leagueMateCount = 4;
 
   function clamp(value, minimum, maximum) {
@@ -952,6 +954,22 @@
   addLeagueMateButton.addEventListener("click", function () {
     leagueMateCount = Math.min(12, leagueMateCount + 1);
     updateCommunityLeague();
+  });
+  document.querySelectorAll("[data-plan-button]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      if (typeof prototypeDialog.showModal === "function") {
+        prototypeDialog.showModal();
+      } else {
+        prototypeDialog.setAttribute("open", "");
+      }
+    });
+  });
+  closePrototypeDialog.addEventListener("click", function () {
+    if (typeof prototypeDialog.close === "function") {
+      prototypeDialog.close();
+    } else {
+      prototypeDialog.removeAttribute("open");
+    }
   });
 
   renderCommunityValues();

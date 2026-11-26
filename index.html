@@ -20,6 +20,7 @@
       <a href="#analyze">Analyze</a>
       <a href="#my-league">My League</a>
       <a href="#community">Community</a>
+      <a href="#pricing">Pricing</a>
       <a href="#how-it-works">How it works</a>
     </nav>
   </header>
@@ -234,7 +235,53 @@
     </section>
 
     <!-- =======================================================
-         VIEW 5: HOW IT WORKS
+         VIEW 5: PRICING
+         ======================================================= -->
+    <section id="pricing" data-view hidden>
+      <h1>Pricing</h1>
+      <p class="lead">Choose the TradeRef plan that fits the way you manage.</p>
+
+      <div class="pricing-grid">
+        <article class="card pricing-card">
+          <h2>Free</h2>
+          <p class="plan-price">$0</p>
+          <ul class="plan-features">
+            <li>3 trade analyses per week</li>
+            <li>Player grades and verdict</li>
+          </ul>
+          <button type="button" class="button plan-button" data-plan-button>Get started</button>
+        </article>
+
+        <article class="card pricing-card pricing-card-popular">
+          <p class="popular-badge">Most popular</p>
+          <h2>Pro</h2>
+          <p class="plan-price">$4.99<span>/month</span></p>
+          <p class="plan-season-price">$24.99/season</p>
+          <ul class="plan-features">
+            <li>Unlimited analyses</li>
+            <li>League connect</li>
+            <li>Fit for your team</li>
+            <li>Chance they accept</li>
+            <li>Saved trade history</li>
+            <li>Make it fair suggestions</li>
+          </ul>
+          <button type="button" class="button plan-button" data-plan-button>Start free trial</button>
+        </article>
+
+        <article class="card pricing-card">
+          <h2>League Pass</h2>
+          <p class="plan-price">$39.99<span>/season</span></p>
+          <ul class="plan-features">
+            <li>Pro for all 12 managers in one league</li>
+            <li>League-wide trade finder</li>
+          </ul>
+          <button type="button" class="button plan-button" data-plan-button>Start free trial</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- =======================================================
+         VIEW 6: HOW IT WORKS
          ======================================================= -->
     <section id="how-it-works" data-view hidden>
       <h1>How it works</h1>
@@ -274,6 +321,14 @@
   <footer class="site-footer">
     <p>Student prototype for BSAD 281 at St. Francis Xavier University. Not a real company — all data is fictional.</p>
   </footer>
+
+  <dialog class="prototype-dialog" id="prototype-dialog" aria-labelledby="prototype-dialog-title">
+    <div class="prototype-dialog-content">
+      <h2 id="prototype-dialog-title">TradeRef prototype</h2>
+      <p>This is a prototype. No payment is taken.</p>
+      <button type="button" class="button" id="close-prototype-dialog">Close</button>
+    </div>
+  </dialog>
 
   <!-- Scripts load in this order: data first, then the code that uses it. -->
   <script src="data.js"></script>
