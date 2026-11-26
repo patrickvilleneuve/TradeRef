@@ -32,7 +32,14 @@
   7. Rewrite this project log.
 - **What worked:** Demo league connection, balanced team needs, fit for your team, chance they accept, the Community slider, league unlock card, and community trade values all work on the live site.
 - **What broke, and how we fixed it:** See the "Things that broke" table below.
-- **Committed?** Yes. Commits were "Updated business case and project log," "Added my league, team fit and chance they accept," "Balanced demo league rosters and renamed the teams," "Hid trading with box when no league is loaded," "Added community page showing the network effect," "Made community trade values look realistic," "Rewrote business case to match the rubric," and "Added AI use line to business case."
+- **Committed?** Yes. Commits were "Updated business case and project log," "Added my league, team fit and chance they accept," "Balanced demo league rosters and renamed the teams," "Hid trading with box when no league is loaded," "Added community page showing the network effect," "Made community trade values look realistic," and "Rewrote business case to match the rubric."
+
+### Session 3 — Nov 26 — driver: Patrick
+- Goal: build the Pricing page, saved trades with trade history, Make it fair, a PPR / Half-PPR / Standard scoring toggle and a free-plan counter; clean up the site; redesign it with a navy theme and a referee logo; update the business case.
+- Key prompts (shortened): 1) add a Pricing section with Free, Pro and League Pass and a "no payment is taken" popup; 2) add Save trade and a My trade history card with Accepted, Rejected and Delete; 3) add Make it fair, the scoring toggle and the free plan counter; 4) cleanup: fix "100.0% against you", reword the first Why line, check every section on a phone, links, footer, console errors and outside links; 5) give the site a professional navy sports-analytics redesign with a referee logo, without changing how it works; 6) fix the logo being removed when the startup name is set, and make the home hero readable; 7) replace the referee logo and favicon with a cleaner striped-jersey SVG; 8) "Update the business case" (Copilot rewrote the whole file and changed the headings, so I discarded it); 9) update only sections 1 and 4 of the business case for the new features; 10) update this log.
+- What worked: pricing popups, saving trades and marking them accepted or rejected, Make it fair, the scoring toggle, the free plan counter, the navy redesign and the new referee logo all work on the live site.
+- What broke: see the table below.
+- Commits: "Added pricing page", "Added save trade and trade history", "Added make it fair, scoring toggle and free plan counter", "Cleaned up the app making sure it all works well", "Redesigned site with referee logo and navy theme", "Updated business case and project log for Session 3".
 
 ## Things that broke (running list)
 
@@ -47,6 +54,12 @@
 | Nov 25 | An empty Trading with dropdown showed with no league loaded. | Checked the Analyze page after disconnecting. | Hid the box unless a league is loaded. |
 | Nov 25 | Community trade values dropped in perfect steps and the top 4 were all QBs. | Looked at the table on the live site. | Used uneven values with mixed positions. |
 | Nov 25 | The business case commit did not reach GitHub. | Checked GitHub and found the old version. | Clicked Sync Changes after committing. |
+| Nov 26 | The referee logo disappeared after the site name loaded. | Checked how the header name was updated. | Moved `id="brand-name"` from the link to the text span, leaving the SVG intact. |
+| Nov 26 | The home hero appeared light grey behind white text. | Checked the layered CSS background declaration. | Combined the yard-line overlays and navy gradient into one valid background declaration. |
+| Nov 26 | The losing example said "100.0% against you" because the other side had 0 trade value. | Noticed it on the live site. | Showed the trade value points with "no starter-level value" instead of a percentage. |
+| Nov 26 | The first Why line read "adds 85 trade value to the player you receive". | Read the results. | Reworded it to "The best player you get / give up is...". |
+| Nov 26 | The first referee logo looked too simple and was hard to recognize at small size. | Compared it in the header. | Replaced it with a cleaner striped-jersey SVG. |
+| Nov 26 | A short "Update the business case" prompt made Copilot rewrite the whole file, change the headings and add new sections. | Checked the file before committing. | Discarded the rewrite and used a prompt that only updated sections 1 and 4. |
 
 ## What a real version would need
 

@@ -1,61 +1,89 @@
 # Business case
 
-## 1. The idea
+## Executive summary
 
-TradeRef is for fantasy football managers in 10–12 team redraft leagues who receive several trade offers a season. They must decide whether to accept, reject, or counter, often without a clear answer.
+TradeRef is a proposed trade-decision tool for managers in 10–12 team fantasy football redraft leagues. It would bring player comparisons, roster needs, and clear explanations into one place, helping a manager decide whether to accept, reject, or counter an offer.
 
-Today, managers compare ranking sites, podcasts, and group chats. These sources can disagree, miss new injuries or injured teammates, and rarely account for the manager’s roster. A general ranking cannot show whether a trade improves a weak position, so managers are left guessing.
+The website is a student prototype, not a live service. Its player and league information is fictional; its acceptance estimate and community values are illustrative; and it has no real accounts, external data feeds, league integrations, or payments. The prototype demonstrates the proposed experience, not proven accuracy, demand, or revenue.
 
-TradeRef gives each player a grade using rest-of-season projections, this and last season’s points, usage, injury status and expected weeks out, and teammate injuries. The analyzer shows value above replacement, a consolidation bonus for a one-for-many trade, a win, fair, or loss verdict, and reasons. Three examples demonstrate it. Connect the demo league to see a position-grouped roster and team needs in My League. In Analyze, “Fit for your team” compares starting points before and after, and “Chance they accept” estimates the other manager’s response. Community shows a managers slider, features unlocked as league members join, and community trade values.
+The business opportunity is plausible but unvalidated. A low-cost pilot should first test whether managers find the analysis useful and whether they would pay for individual or league-wide access. A real launch would depend on licensed, timely data, privacy safeguards, and evidence that the estimates help users make better-informed decisions.
 
-The prototype has no payments. A possible freemium plan would offer three analyses a week for free; Pro would cost $4.99 per month or $24.99 per season for unlimited analyses, league connection, team fit, and acceptance estimates. League Pass would cost $39.99 per season for a whole 12-team league. TradeRef would not use sportsbook ads.
+## 1. The idea and customer value
 
-## 2. Where IT creates value
+The initial customer is an active manager in a 10–12 team redraft league who receives trade offers during the season. Managers may compare rankings, podcasts, and group-chat opinions, but those sources can differ and may not account for a manager’s roster needs. A player ranking alone does not explain whether a specific trade improves a particular lineup.
 
-Porter’s value chain shows where software could add value. For TradeRef, the clearest activities are operations and marketing and sales. The current site is a student prototype with fictional data, but it demonstrates the real service’s proposed flow.
+TradeRef’s proposed value is a quick, understandable comparison. The analyzer grades players using rest-of-season projections, current- and prior-season points, usage, injury status and expected time out, and teammate injuries. It compares trade value above a replacement-level threshold, gives a win, fair, or loss verdict, and explains factors behind the result. It includes a “Make it fair” suggestion and a scoring toggle for PPR, Half-PPR, and Standard.
 
-In operations, software could combine projections, season stats, usage, and injury information, then apply consistent grading rules in seconds. A manager doing this by hand might spend 20 minutes or more switching between sites, aligning scoring rules, and weighing an offer. Speed matters when offers have deadlines. Consistent comparisons and clear reasons also help managers understand a verdict instead of receiving only a yes or no.
+The prototype also demonstrates a fictional league roster, position needs, team-fit comparison, a heuristic “Chance they accept” estimate, saved trade history, sample trades, and community features. In a real product, team fit would need accurate league and lineup data. Acceptance estimates would need validation against a sufficiently large, representative set of real trade offers and outcomes; the current estimate is not a trained model.
 
-In marketing and sales, League Pass gives one buyer a reason to invite the other 11 managers. One sale can reach a whole league instead of requiring 12 separate subscriptions or ads. The customer acquisition cost per manager can fall, and word of mouth can reach other leagues at low cost. The league card’s unlocking features give members a reason to invite league-mates. This matters because a small product cannot afford to reach everyone one at a time.
+The proposed pricing is an assumption to test, not an established offer:
+
+| Proposed tier | Illustrative price | Intended value |
+|---|---:|---|
+| Free | Three analyses per week | Try player grades and trade verdicts |
+| Pro | $4.99 per month or $24.99 per season | Unlimited analysis, league connection, team fit, acceptance estimates, and saved history |
+| League Pass | $39.99 per season | Pro access and proposed league-wide features for a 12-manager league |
+
+The Pricing page shows the Free, Pro, and League Pass plans, but the prototype takes no payment. These prices need customer interviews and willingness-to-pay tests before they can support a revenue forecast. TradeRef would avoid sportsbook advertising and betting-related partnerships.
+
+## 2. Where information technology creates value
+
+Porter’s value chain highlights operations and marketing and sales as the most relevant activities.
+
+**Operations:** Software could combine licensed projections, statistics, usage, and injury information, apply consistent scoring rules, and show the result with its reasoning. Automating the comparison could reduce the effort of switching between sources. Its value would depend on data quality, timely updates, transparent scoring, and a useful mobile experience.
+
+**Marketing and sales:** A free tier could let individual managers try the analyzer before deciding whether to pay. League Pass offers a group-based route to adoption: one purchase could introduce the product to an entire league, while invited managers could see shared features. This could lower acquisition effort per manager, but the effect is only a hypothesis; it depends on leagues valuing the shared features and inviting one another.
+
+The current site is a single-page student prototype with fictional data. Its interface demonstrates the proposed workflow, but it does not yet deliver the operational benefits of real-time licensed data or platform integrations.
 
 ## 3. Network effects
 
-TradeRef would be a one-sided network: fantasy football managers are the only participating group. There is no second group, such as advertisers, whose participation makes the product better. Ads could create revenue, but that is not a network effect. The potential benefit comes from manager activity and more members joining the same league.
+TradeRef would be a one-sided network: the participating users are fantasy football managers. Advertisers would be a possible revenue source, not a second user group that improves the product. TradeRef does not plan to depend on ads.
 
-The main possible effect is a data network effect. If users choose to log whether a trade was accepted or rejected and what happened afterward, TradeRef could compare its estimate with real outcomes. A large, varied, accurate sample could teach it which offers managers accept in different league situations. That could improve the “Chance they accept” prediction and community trade values for every manager, not only the person who logged a trade. More records do not automatically mean better predictions; results need checking for quality and bias. The prototype’s “Chance they accept” meter and Community trade values table show where this data could appear. Their values are fictional and are not trained on real outcomes.
+The strongest potential network effect is a **data network effect**. If users knowingly and voluntarily report whether a trade was accepted and its outcome, a clean, representative dataset might help TradeRef test and improve acceptance estimates and community values. More records alone do not ensure better results: the data could be biased, manipulated, or too sparse. Any collection would require clear consent, safeguards, and quality checks. No real trade outcomes feed the prototype.
 
-There is also a local, same-side effect inside a league. Each additional member can make shared features more useful to the others. The Community league card illustrates the unlocks: at six members, users can see which managers want to trade; at twelve, the league-wide trade finder unlocks. This benefit comes from more of the same kind of user, not a second market side.
+A second, local same-side effect could occur within a league. More participating members may make shared tools more useful. The prototype illustrates features that unlock at six and twelve league members; those unlocks are a concept, not evidence that managers will join or pay.
 
-The basic player grade has no network effect; its scoring rules work the same for one user or one million users. More users could increase subscription revenue, but that is growth, not a network effect. TradeRef should not claim the grade improves just because its user count rises.
+The basic player grade does not inherently improve as the user count grows. User growth could increase reach or revenue, but that is not itself a network effect. The cold-start approach is “come for the tool, stay for the network”: first offer a useful individual comparison based on reliable data, then invite users to connect their league and explore shared features.
 
-The cold-start problem is manageable because the analyzer can be useful on day one with analyst data. The idea is “come for the tool, stay for the network”: first offer a useful individual comparison, then invite a manager to bring in a league through League Pass. League participation and trade outcomes could add value later.
+## 4. Can it be copied? The moat question
 
-## 4. Can it be copied? (the moat question)
+The website, scoring interface, and basic grading rules are imitable. TradeRef’s potential advantage would come from trust, data quality, and league adoption rather than code alone. VRIN evaluates whether a resource is valuable, rare, difficult to imitate, and non-substitutable.
 
-Anyone could rebuild the website in a weekend with Copilot. The pages, controls, bars, and scoring display are not the advantage. The possible advantage is a set of resources behind the interface. VRIN asks whether a resource is Valuable, Rare, hard to imitate, and Non-substitutable.
+| Resource | VRIN assessment |
+|---|---|
+| Permission-based history of offers, decisions, and outcomes | Could become valuable and difficult to reproduce quickly if it is large, diverse, accurate, and responsibly collected. It is not automatically rare or defensible, and public rankings and other trade tools remain substitutes. |
+| League integrations | Valuable for reducing manual setup, but not inherently rare or difficult to imitate. Platform policy changes could remove access; manual roster entry is a partial substitute. |
+| Licensed projections and injury data | Necessary for timely grades, but other products may license similar feeds. Providers are substitutable, so this is an operating input rather than a durable moat. |
+| Saved trade history and league setup | The prototype’s “My trade history” section in My League displays saved trades, which could create a modest switching cost. Overall, switching costs are low; users should be able to export or delete their information. |
 
-A dataset of accepted and rejected trades, plus later outcomes, is valuable because it can show what managers accept and what their choices reveal about trade value. It could be rare if TradeRef gathers a large, clean, permission-based history. It becomes hard to imitate quickly because a competitor cannot recreate a season of varied outcomes overnight. It is not fully non-substitutable: crowd-sourced value sites and public rankings are partial alternatives. So the dataset passes V, may pass R and I as it grows, and fails strict N. Useful, checked records could make it stronger each week.
-
-League integrations through fantasy platforms’ public APIs, such as Sleeper’s, are valuable because they can import rosters and league details instead of asking users to enter them manually. They are not rare: any competitor can use a public API under its terms. They are not hard to imitate, and they are substitutable because another platform or manual roster entry can serve some of the same users. The platform could also change its rules or cut off access. This resource passes V, but fails R, I, and N.
-
-Licensed injury and projection data is valuable because grades need timely information. It is not rare if other businesses can buy the same feed, and it is not hard to imitate when competitors can sign similar agreements. Other providers or public reporting are substitutes, so it fails R, I, and N. It is a necessary input, not a lasting moat.
-
-Switching costs could come from a manager’s saved trade history and league setup. Those make it a little inconvenient to move, but the cost is small: users can recreate settings, and TradeRef should let them export or delete their records. These costs are not a strong reason to stay.
-
-The biggest threat is the fantasy platforms themselves: they already hold trades in their apps and could add a trade grade. A funded rival could build a similar site in weeks, but would need a season or more of outcome data and league adoption to match prediction accuracy. The dataset and league networks can strengthen over time; integrations and data feeds can be copied or replaced. TradeRef’s moat is moderate at best, based on trust and useful data rather than clever code.
+Fantasy platforms already have league and trade information and could add similar analysis. A competitor could reproduce the interface quickly. A validated, responsibly collected outcome dataset and trusted league communities might take longer to build, but neither advantage exists yet. The current moat is weak; it could become moderate only if TradeRef earns user trust and proves that its data and community improve the service.
 
 ## 5. Cloud and operations
 
-A real TradeRef service could use a login service as SaaS, so the team would not have to build account security from scratch. Payments could also run through a payment processor as SaaS. Injury and projection information would come from a sports data feed, also a SaaS or data API. The app and its database would run on a hosting platform as PaaS. If TradeRef trained its own prediction model, it could rent computing power as IaaS when needed. The current prototype has no real accounts, payments, external feeds, or model training.
+A real service could use:
 
-Each service creates an operating risk. A data provider could raise prices, and data is likely to be the biggest cost; TradeRef should negotiate a season contract and keep a backup provider. A service outage on Sunday before kickoff could hit when traffic peaks; auto-scaling and a public status page would help manage capacity and communicate clearly. A fantasy platform could shut off its API and break league imports; manual roster entry should remain available as a fallback.
+- **SaaS:** identity and account management, payment processing, customer support, and licensed sports-data feeds.
+- **PaaS:** application hosting, APIs, and a database for league settings, trade history, and consented outcomes.
+- **IaaS:** rented computing capacity if custom prediction models later require it.
 
-The full list of proposed real-version requirements is in the “What a real version would need” table in PROJECT_LOG.md. Keeping it there avoids repeating every staffing, security, and service requirement in this section.
+The prototype instead uses local browser storage for selected demo league and saved-trade information. It has no shared database, login, live data feed, platform API connection, or payment processing. The price tiers, free-analysis counter, acceptance estimate, and community activity do not represent a functioning subscription or real-world prediction service.
+
+Major operating costs would include data licensing, hosting, payment fees, support, and the engineering and analysis needed to validate grades and predictions. Data licensing may be a significant recurring cost, so the business should confirm rights and costs before building around a provider. Platform integrations can change or become unavailable, making a manual roster-entry option important. The full list of proposed real-version requirements and rough costs is in the “What a real version would need” table in [PROJECT_LOG.md](./PROJECT_LOG.md).
 
 ## 6. Risks and ethics
 
-Importing a league can pull information about managers who never signed up. TradeRef should explain the import, collect only what it needs, avoid showing other people’s names, and delete imported league data when someone disconnects.
+- **Data accuracy:** Stale projections or injury information could mislead users. Show update timing, explain assumptions, and present grades as estimates rather than guarantees.
+- **Privacy:** League imports can include information about people who have not signed up. Collect only what is needed, explain the import, limit visibility, secure stored data, and provide deletion and export controls.
+- **Fairness and manipulation:** A manager could use the tool to pressure less-informed league-mates, while false trade reports could distort community values. Explain the analysis consistently, make league features available fairly, and moderate any future user-submitted data.
+- **Minors and gambling adjacency:** Fantasy football audiences may include minors, and paid features could be mistaken for betting advice. Avoid sportsbook advertising and betting claims, use clear disclaimers, and set appropriate age and payment safeguards for any real paid service.
+- **Platform and provider dependency:** Data vendors can change prices or terms, and fantasy platforms can change API access. Review contracts and retain manual entry as a fallback.
+- **Service availability:** Traffic and interest may peak around deadlines. A real service would need monitoring, backups, support, and capacity planning; these are not part of the prototype.
 
-A sharp manager could use the tool to fleece less-informed friends. League Pass gives everyone in the league access to the same analysis. TradeRef should show its grades and reasons openly, make clear they are estimates, and avoid presenting a verdict as a guarantee.
+TradeRef should not sell user or league data. Before launch, it should establish clear consent, retention, security, and deletion policies and review applicable privacy, consumer-protection, and age-related requirements.
 
-Fantasy football is close to gambling, and the audience can include minors. TradeRef should show no betting ads or sportsbook links, require users to be 18 or older for paid plans, and never sell user or league data to betting companies. Clear notices should say the tool is not betting advice. These limits protect trust and reduce the chance of encouraging risky behavior.
+## 7. Business-case test
+
+The next step is validation, not a full-scale launch. Test the prototype with managers in the target league format and measure whether they understand the verdict, trust the explanations, return to analyze more trades, and value team-specific context. Test the proposed prices separately from the free experience.
+
+Before a real pilot, confirm the cost and licensing terms for data, identify an integration path that respects platform rules, and define how analysis quality will be evaluated. Only proceed to paid plans or outcome-based predictions if the product demonstrates user value, the data can be used responsibly, and realistic recurring revenue can cover data, hosting, support, and payment costs.
