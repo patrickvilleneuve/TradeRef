@@ -64,6 +64,11 @@
   const addLeagueMateButton = document.getElementById("add-league-member");
   const prototypeDialog = document.getElementById("prototype-dialog");
   const closePrototypeDialog = document.getElementById("close-prototype-dialog");
+  const tradeHistoryList = document.getElementById("trade-history-list");
+  const historyNotice = document.getElementById("history-notice");
+  const tradeHistoryStorageKey = "traderef-saved-trades-v1";
+  let savedTrades = [];
+  let currentAnalyzedTrade = null;
   let leagueMateCount = 4;
 
   function clamp(value, minimum, maximum) {
@@ -776,6 +781,125 @@
     return card;
   }
 
+  function isValidSavedTrade(trade) {
+    return trade && typeof trade.id === "string" &&
+      typeof trade.date === "string" && Array.isArray(trade.give) &&
+      Array.isArray(trade.get) && trade.give.every(function (name) {
+        return typeof name === "string";
+      }) && trade.get.every(function (name) {
+        return typeof name === "string";
+      }) && typeof trade.verdict === "string" &&
+      Number.isFinite(trade.percentDifference) && Number.isFinite(Date.parse(trade.date)) &&
+      (trade.status === null || trade.status === "Accepted" || trade.status === "Rejected");
+  }
+
+  function loadSavedTrades() {
+    try {
+      const saved = localStorage.getItem(tradeHistoryStorageKey);
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      if (!Array.isArray(parsed) || !parsed.every(isValidSavedTrade)) {
+        historyNotice.textContent = "Saved trade history could not be loaded.";
+        return;
+      }
+      savedTrades = parsed;
+    } catch (error) {
+      historyNotice.textContent = "Saved trade history could not be read from this browser.";
+    }
+  }
+
+  function persistSavedTrades(nextTrades) {
+    try {
+      localStorage.setItem(tradeHistoryStorageKey, JSON.stringify(nextTrades));
+      savedTrades = nextTrades;
+      renderTradeHistory();
+      return true;
+    } catch (error) {
+      historyNotice.textContent = "Your browser could not save the trade history.";
+      return false;
+    }
+  }
+
+  function makeHistoryButton(label, className, handler) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = label;
+    button.addEventListener("click", handler);
+    return button;
+  }
+
+  function renderTradeHistory() {
+    tradeHistoryList.replaceChildren();
+    if (savedTrades.length === 0) {
+      const emptyMessage = document.createElement("p");
+      emptyMessage.className = "muted";
+      emptyMessage.textContent = "No saved trades yet. Analyze a trade and click Save trade.";
+      tradeHistoryList.append(emptyMessage);
+      return;
+    }
+
+    savedTrades.slice().sort(function (a, b) {
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    }).forEach(function (trade) {
+      const item = document.createElement("article");
+      item.className = "saved-trade";
+
+      const heading = document.createElement("div");
+      heading.className = "saved-trade-heading";
+      const date = document.createElement("time");
+      date.dateTime = trade.date;
+      date.textContent = new Date(trade.date).toLocaleDateString();
+      const verdict = document.createElement("strong");
+      verdict.className = "saved-trade-verdict";
+      verdict.textContent = trade.verdict + " · " + trade.percentDifference.toFixed(1) + "% difference";
+      heading.append(date, verdict);
+      if (trade.status) {
+        const status = document.createElement("span");
+        status.className = "trade-status " + trade.status.toLowerCase();
+        status.textContent = trade.status;
+        heading.append(status);
+      }
+
+      const give = document.createElement("p");
+      const giveLabel = document.createElement("strong");
+      giveLabel.textContent = "You give: ";
+      give.append(giveLabel);
+      give.append(document.createTextNode(trade.give.join(", ")));
+      const get = document.createElement("p");
+      const getLabel = document.createElement("strong");
+      getLabel.textContent = "You get: ";
+      get.append(getLabel);
+      get.append(document.createTextNode(trade.get.join(", ")));
+
+      const controls = document.createElement("div");
+      controls.className = "saved-trade-controls";
+      controls.append(
+        makeHistoryButton("Accepted", "history-action", function () {
+          updateTradeStatus(trade.id, "Accepted");
+        }),
+        makeHistoryButton("Rejected", "history-action", function () {
+          updateTradeStatus(trade.id, "Rejected");
+        }),
+        makeHistoryButton("Delete", "history-action delete-trade", function () {
+          persistSavedTrades(savedTrades.filter(function (savedTrade) {
+            return savedTrade.id !== trade.id;
+          }));
+        })
+      );
+      item.append(heading, give, get, controls);
+      tradeHistoryList.append(item);
+    });
+  }
+
+  function updateTradeStatus(id, status) {
+    const nextTrades = savedTrades.map(function (trade) {
+      if (trade.id !== id) return trade;
+      return Object.assign({}, trade, { status: status });
+    });
+    if (persistSavedTrades(nextTrades)) historyNotice.textContent = "";
+  }
+
   function analyzeTrade() {
     if (give.length === 0 || get.length === 0) return;
     const giveTotal = sideTotal(give);
@@ -906,6 +1030,33 @@
       why.append(reason);
     });
     results.append(why);
+
+    currentAnalyzedTrade = {
+      give: give.map(function (id) { return findPlayer(id).name; }),
+      get: get.map(function (id) { return findPlayer(id).name; }),
+      verdict: verdict,
+      percentDifference: absolutePercent
+    };
+    const saveControls = document.createElement("div");
+    saveControls.className = "save-trade-controls";
+    const saveButton = makeHistoryButton("Save trade", "button", function () {
+      const now = new Date().toISOString();
+      const trade = Object.assign({
+        id: now + "-" + Math.random().toString(36).slice(2),
+        date: now,
+        status: null
+      }, currentAnalyzedTrade);
+      if (persistSavedTrades([trade].concat(savedTrades))) {
+        historyNotice.textContent = "Trade saved";
+        saveMessage.textContent = "Trade saved";
+      } else {
+        saveMessage.textContent = "Trade could not be saved.";
+      }
+    });
+    const saveMessage = document.createElement("span");
+    saveMessage.className = "save-trade-message";
+    saveControls.append(saveButton, saveMessage);
+    results.append(saveControls);
     results.hidden = false;
     results.scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -973,6 +1124,8 @@
   });
 
   renderCommunityValues();
+  loadSavedTrades();
+  renderTradeHistory();
   updateCommunityNetwork();
   updateCommunityLeague();
   loadSavedLeague();

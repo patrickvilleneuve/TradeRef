@@ -651,6 +651,107 @@ h1 {
   font-size: 0.9rem;
 }
 
+.trade-history-card {
+  margin-top: 20px;
+}
+
+.trade-history-card h2 {
+  margin: 0 0 8px;
+}
+
+.history-notice {
+  min-height: 1.4em;
+  color: var(--good) !important;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.saved-trade {
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+
+.saved-trade-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.saved-trade-verdict {
+  color: var(--navy);
+}
+
+.saved-trade > p {
+  margin: 4px 0 !important;
+  overflow-wrap: anywhere;
+}
+
+.trade-status {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.trade-status.accepted {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.trade-status.rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.saved-trade-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.history-action {
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--navy-2);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.history-action:hover {
+  background: var(--background);
+}
+
+.history-action.delete-trade {
+  color: var(--bad);
+}
+
+.save-trade-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.save-trade-controls .button {
+  margin: 0;
+}
+
+.save-trade-message {
+  color: var(--good);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .league-heading {
   display: flex;
   align-items: center;
