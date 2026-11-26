@@ -116,10 +116,13 @@
   }
 
   function getTeammateImpact(note) {
-    const match = note.match(/[+-]\s*([0-9]+(?:\.[0-9]+)?)/);
-    if (!match) return 0;
-    const amount = Number(match[1]);
-    return note[match.index] === "+" ? amount : -amount;
+    const signedChange = note.match(/([+-])\s*([0-9]+(?:\.[0-9]+)?)/);
+    if (signedChange) {
+      const amount = Number(signedChange[2]);
+      return signedChange[1] === "+" ? amount : -amount;
+    }
+    const reduction = note.match(/(?:reduction of|fewer)\s*([0-9]+(?:\.[0-9]+)?)/i);
+    return reduction ? -Number(reduction[1]) : 0;
   }
 
   function calculateInjuryFactor(player) {
@@ -263,19 +266,24 @@
       valueCell.textContent = String(entry.value);
 
       const changeCell = document.createElement("td");
-      const direction = entry.weeklyChange >= 0 ? "up" : "down";
+      const isDown = entry.weeklyDirection === "down";
+      const direction = isDown ? "down" : "up";
+      const directionLabel = isDown ? "Down " :
+        entry.weeklyChange > 0 ? "Up " : "No change";
       changeCell.className = "community-change " + direction;
       changeCell.setAttribute(
         "aria-label",
-        (entry.weeklyChange > 0 ? "+" : "") + entry.weeklyChange + " this week"
+        directionLabel + (entry.weeklyChange === 0 ? "" : " " + entry.weeklyChange) +
+          " this week"
       );
       changeCell.setAttribute("data-label", "Change this week");
       const arrow = document.createElement("span");
       arrow.setAttribute("aria-hidden", "true");
-      arrow.textContent = entry.weeklyChange >= 0 ? "↑" : "↓";
+      arrow.textContent = isDown ? "↓" : entry.weeklyChange > 0 ? "↑" : "↔";
       const change = document.createElement("span");
       change.setAttribute("aria-hidden", "true");
-      change.textContent = (entry.weeklyChange > 0 ? "+" : "") + entry.weeklyChange;
+      change.textContent = (entry.weeklyChange > 0 && !isDown ? "+" : "") +
+        entry.weeklyChange;
       changeCell.append(arrow, change);
 
       const tradesCell = document.createElement("td");
@@ -583,8 +591,6 @@
     document.getElementById("get-heading").textContent = activeLeague
       ? "You get · " + (partner ? partner.name : "their roster")
       : "You get";
-    giveSearch.placeholder = activeLeague ? "Search your roster" : "Type a player name";
-    getSearch.placeholder = activeLeague ? "Search their roster" : "Type a player name";
     analyzeButton.disabled = give.length === 0 || get.length === 0;
   }
 
@@ -885,6 +891,9 @@
         return typeof name === "string";
       }) && typeof trade.verdict === "string" &&
       Number.isFinite(trade.percentDifference) && Number.isFinite(Date.parse(trade.date)) &&
+      (trade.pointDifference === undefined || Number.isFinite(trade.pointDifference)) &&
+      (trade.differenceDirection === undefined || typeof trade.differenceDirection === "string") &&
+      (trade.zeroValueSide === undefined || typeof trade.zeroValueSide === "boolean") &&
       (trade.status === null || trade.status === "Accepted" || trade.status === "Rejected");
   }
 
@@ -947,7 +956,14 @@
       date.textContent = new Date(trade.date).toLocaleDateString();
       const verdict = document.createElement("strong");
       verdict.className = "saved-trade-verdict";
-      verdict.textContent = trade.verdict + " · " + trade.percentDifference.toFixed(1) + "% difference";
+      const hasZeroValueSide = trade.zeroValueSide === true || trade.percentDifference === 100;
+      const differenceSummary = hasZeroValueSide
+        ? Number.isFinite(trade.pointDifference)
+          ? trade.pointDifference + " trade value points " + trade.differenceDirection +
+            ". The other side has no starter-level value."
+          : "One side has no starter-level value."
+        : trade.percentDifference.toFixed(1) + "% difference";
+      verdict.textContent = trade.verdict + " · " + differenceSummary;
       heading.append(date, verdict);
       if (trade.status) {
         const status = document.createElement("span");
@@ -1029,6 +1045,10 @@
     const differenceText = document.createElement("p");
     if (absolutePercent <= 5) {
       differenceText.textContent = "The totals differ by " + absolutePercent.toFixed(1) + "%.";
+    } else if (giveAdjusted === 0 || getAdjusted === 0) {
+      differenceText.textContent = Math.abs(difference) + " trade value points " +
+        (difference > 0 ? "in your favor." : "against you.") +
+        " The other side has no starter-level value.";
     } else {
       differenceText.textContent = Math.abs(difference) + " trade value points, " +
         absolutePercent.toFixed(1) + "% " + (difference > 0 ? "in your favor." : "against you.");
@@ -1095,14 +1115,18 @@
     const strongestGet = get.map(findPlayer).sort(function (a, b) {
       return calculateTradeValueScore(b).score - calculateTradeValueScore(a).score;
     })[0];
-    if (difference > 0) {
-      reasons.push(strongestGet.name + " adds " +
-        calculateTradeValueScore(strongestGet).score + " trade value to the player you receive.");
+    if (absolutePercent <= 5) {
+      reasons.push("The best players on each side are closely matched.");
+    } else if (difference > 0) {
+      const bestScore = calculateTradeValueScore(strongestGet).score;
+      reasons.push("The best player you get is " + strongestGet.name + " (score " +
+        bestScore + ", trade value " + valueAboveReplacement(bestScore) + ").");
     } else if (difference < 0) {
-      reasons.push(strongestGive.name + " is worth " +
-        calculateTradeValueScore(strongestGive).score + " and is leaving your roster.");
+      const bestScore = calculateTradeValueScore(strongestGive).score;
+      reasons.push("The best player you give up is " + strongestGive.name + " (score " +
+        bestScore + ", trade value " + valueAboveReplacement(bestScore) + ").");
     } else {
-      reasons.push("The strongest player on both sides is closely matched.");
+      reasons.push("The best players on each side are closely matched.");
     }
     reasons.push(makeReason(strongestGet));
     reasons.push(makeReason(strongestGive));
@@ -1160,7 +1184,11 @@
       give: give.map(function (id) { return findPlayer(id).name; }),
       get: get.map(function (id) { return findPlayer(id).name; }),
       verdict: verdict,
-      percentDifference: absolutePercent
+      percentDifference: absolutePercent,
+      pointDifference: Math.abs(difference),
+      differenceDirection: difference > 0 ? "in your favor" : "against you",
+      zeroValueSide: (giveAdjusted === 0 && getAdjusted > 0) ||
+        (getAdjusted === 0 && giveAdjusted > 0)
     };
     const saveControls = document.createElement("div");
     saveControls.className = "save-trade-controls";

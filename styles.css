@@ -15,6 +15,11 @@
   --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+.league-team strong,
+.league-team span {
+  overflow-wrap: anywhere;
+}
+
 * { box-sizing: border-box; }
 
 body {
@@ -31,6 +36,8 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   outline-offset: 3px;
 }
 
+button { min-height: 44px; }
+
 .site-header {
   display: flex;
   flex-wrap: wrap;
@@ -43,6 +50,9 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   font-weight: 800;
   font-size: 1.35rem;
   color: #fff;
@@ -57,10 +67,12 @@ nav {
 }
 
 nav a {
+  display: block;
+  min-height: 44px;
   color: #cbd8e7;
   text-decoration: none;
   font-weight: 650;
-  padding: 6px 0;
+  padding: 10px 0;
 }
 
 nav a[aria-current="page"] { color: #fff; }
@@ -150,6 +162,13 @@ h1 {
   font-size: 0.88rem;
   font-weight: 750;
   cursor: pointer;
+}
+
+.search-result > strong,
+.search-result > span,
+.player-chip > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .scoring-button.selected {
@@ -337,8 +356,8 @@ h1 {
 
 .player-chip button {
   flex: 0 0 auto;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   border: 0;
   border-radius: 50%;
   background: var(--background);
@@ -465,6 +484,15 @@ h1 {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.graded-player-heading > div:first-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.trade-score {
+  flex: 0 0 auto;
 }
 
 .graded-player-heading h3,
@@ -777,6 +805,7 @@ h1 {
 }
 
 .history-action {
+  min-height: 44px;
   padding: 5px 9px;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -923,6 +952,7 @@ h1 {
 .league-team {
   display: grid;
   gap: 2px;
+  min-width: 0;
   padding: 10px;
   border: 1px solid var(--border);
   border-radius: 9px;
@@ -1082,8 +1112,8 @@ h1 {
 .member-button {
   display: inline-grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: #fff;
@@ -1221,11 +1251,12 @@ h1 {
 
   nav {
     width: 100%;
-    gap: 2px 14px;
+    gap: 2px 12px;
   }
 
   nav a {
     font-size: 0.9rem;
+    overflow-wrap: anywhere;
   }
 
   main {
@@ -1262,6 +1293,13 @@ h1 {
 
   .league-heading {
     align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .trade-builder > *,
+  .league-dashboard-grid > *,
+  .community-layout > * {
+    min-width: 0;
   }
 
   .community-table,
