@@ -1,13 +1,15 @@
 :root {
-  --navy: #07182f;
-  --navy-2: #102a4c;
+  --navy: #0B1F3A;
+  --navy-2: #1E3A66;
+  --navy-deep: #07152B;
   --text: #152033;
-  --muted: #64748b;
-  --background: #eef3f8;
+  --muted: #5B6B80;
+  --background: #F2F5FA;
   --surface: #ffffff;
-  --border: #dce5ef;
-  --brand: #19a66a;
-  --brand-dark: #117d50;
+  --border: #D7E0EC;
+  --brand: #0B1F3A;
+  --brand-dark: #07152B;
+  --accent: #8B5A2B;
   --good: #15803d;
   --bad: #dc2626;
   --amber: #b7791f;
@@ -1358,6 +1360,362 @@ h1 {
   .trade-actions {
     display: grid;
   }
+}
+
+/* Professional navy theme and football-inspired details */
+a {
+  color: var(--navy-2);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #9AB5D6;
+  outline-offset: 3px;
+}
+
+.site-header {
+  background: var(--navy);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 18px rgba(7, 21, 43, 0.14);
+}
+
+.brand {
+  gap: 10px;
+  color: #fff;
+}
+
+.brand-logo {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  filter: drop-shadow(0 2px 4px rgba(7, 21, 43, 0.22));
+}
+
+nav a {
+  position: relative;
+  color: #D8E3F1;
+  transition: color 160ms ease;
+}
+
+nav a:hover {
+  color: #fff;
+}
+
+nav a[aria-current="page"] {
+  color: #fff;
+}
+
+nav a[aria-current="page"]::after {
+  background: var(--navy-2);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+body {
+  background: var(--background);
+}
+
+[data-view] > h1 {
+  margin: 0 0 22px;
+  color: var(--navy);
+  font-weight: 850;
+}
+
+[data-view] > h1::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 7px;
+  margin-top: 12px;
+  border-top: 2px solid var(--navy-2);
+  background:
+    linear-gradient(90deg,
+      transparent 0 12px,
+      var(--navy-2) 12px 14px,
+      transparent 14px 19px,
+      var(--navy-2) 19px 21px,
+      transparent 21px 26px,
+      var(--navy-2) 26px 28px,
+      transparent 28px 33px,
+      var(--navy-2) 33px 35px,
+      transparent 35px);
+  background-repeat: no-repeat;
+  background-size: 64px 5px;
+  background-position: 0 2px;
+  border-radius: 999px;
+}
+
+#home > .hero {
+  max-width: none;
+  width: calc(100% + 48px);
+  margin-left: -24px;
+  padding: 62px max(24px, calc((100% - 760px) / 2));
+  border-radius: 18px;
+  color: #fff;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255, 255, 255, 0.055) 0,
+      rgba(255, 255, 255, 0.055) 1px,
+      transparent 1px,
+      transparent 10%),
+    repeating-linear-gradient(0deg,
+      transparent 0,
+      transparent 44px,
+      rgba(255, 255, 255, 0.025) 44px,
+      rgba(255, 255, 255, 0.025) 45px),
+    linear-gradient(135deg, #0B1F3A 0%, #1E3A66 100%);
+  box-shadow: 0 16px 36px rgba(7, 21, 43, 0.12);
+}
+
+.hero h1 {
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(7, 21, 43, 0.18);
+}
+
+.hero h1::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 7px;
+  margin-top: 16px;
+  border-top: 2px solid rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(90deg,
+      transparent 0 12px,
+      rgba(255, 255, 255, 0.72) 12px 14px,
+      transparent 14px 19px,
+      rgba(255, 255, 255, 0.72) 19px 21px,
+      transparent 21px 26px,
+      rgba(255, 255, 255, 0.72) 26px 28px,
+      transparent 28px 33px,
+      rgba(255, 255, 255, 0.72) 33px 35px,
+      transparent 35px);
+  border-radius: 999px;
+}
+
+.hero .eyebrow {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.hero .lead {
+  color: #DCE7F4;
+}
+
+.hero .button {
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: #fff;
+  color: var(--navy);
+  box-shadow: 0 10px 24px rgba(7, 21, 43, 0.18);
+}
+
+.hero .button:hover {
+  background: #EDF3F9;
+  color: var(--navy-deep);
+}
+
+.button {
+  border: 1px solid var(--navy);
+  background: var(--navy);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(11, 31, 58, 0.16);
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.button:hover {
+  border-color: var(--navy-2);
+  background: var(--navy-2);
+  box-shadow: 0 10px 22px rgba(11, 31, 58, 0.22);
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+.example-button,
+.reset-button,
+.history-action,
+.member-button {
+  border: 1px solid var(--navy-2);
+  background: #fff;
+  color: var(--navy);
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.example-button:hover,
+.reset-button:hover,
+.history-action:hover,
+.member-button:hover:not(:disabled) {
+  border-color: var(--navy);
+  background: #EDF3F9;
+  color: var(--navy-deep);
+}
+
+.card,
+.trade-side,
+.graded-player,
+.why-card,
+.team-matchup,
+.league-team,
+.community-feature {
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--navy-2);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 28px rgba(11, 31, 58, 0.07);
+}
+
+.trade-side,
+.graded-player,
+.why-card,
+.team-matchup,
+.league-team,
+.community-feature {
+  background: var(--surface);
+}
+
+.step-number,
+.trade-score span {
+  background: var(--navy);
+}
+
+.popular-badge {
+  background: #F1E7DD;
+  color: #6F4320;
+  border: 1px solid rgba(139, 90, 43, 0.32);
+}
+
+.pricing-card-popular {
+  border-color: var(--navy-2);
+  border-top: 3px solid var(--accent);
+  box-shadow: 0 14px 34px rgba(11, 31, 58, 0.12);
+}
+
+.scoring-button {
+  border-color: #C7D4E4;
+  color: var(--navy);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.scoring-button:hover {
+  border-color: var(--navy-2);
+  background: #EDF3F9;
+}
+
+.scoring-button.selected {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: #fff;
+}
+
+.factor-fill,
+.acceptance-meter div,
+.network-bar span {
+  background: var(--navy-2);
+}
+
+.factor-track,
+.acceptance-meter,
+.network-bar {
+  background: #DFE7F1;
+}
+
+.verdict-meter,
+.acceptance-meter,
+.network-bar,
+.factor-track {
+  border-radius: 999px;
+}
+
+.network-bar span,
+.factor-fill,
+.acceptance-meter div {
+  border-radius: inherit;
+  max-width: 100%;
+}
+
+#manager-slider {
+  accent-color: var(--navy);
+}
+
+.community-feature.unlocked {
+  border-color: #85A7C8;
+  background: #EDF3F9;
+  color: var(--navy);
+}
+
+.search-result:hover {
+  background: #EDF3F9;
+}
+
+.member-button:hover:not(:disabled) {
+  border-color: var(--navy);
+  background: #EDF3F9;
+}
+
+.verdict-banner.win {
+  background: #15803D;
+}
+
+.verdict-banner.fair {
+  background: #A16207;
+}
+
+.verdict-banner.loss {
+  background: #B91C1C;
+}
+
+.free-plan-banner {
+  border-color: #A8C0DA;
+  background: #EDF3F9;
+  color: var(--navy);
+}
+
+.free-plan-banner a {
+  color: var(--navy-deep);
+}
+
+.site-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--navy-deep);
+  color: #D9E4F1;
+}
+
+.prototype-dialog {
+  border-color: var(--navy-2);
+  box-shadow: 0 24px 64px rgba(7, 21, 43, 0.38);
+}
+
+@media (max-width: 700px) {
+  .brand-logo {
+    width: 42px;
+    height: 42px;
+  }
+
+  #home > .hero {
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    padding: 42px 20px;
+    border-radius: 14px;
+  }
+
+  [data-view] > h1 {
+    font-size: 2.05rem;
+  }
+
+  .hero h1 {
+    font-size: 2.35rem;
+  }
+
+  .card,
+  .trade-side,
+  .graded-player,
+  .why-card {
+    padding: 18px;
+  }
+}
 
   .button {
     width: 100%;
