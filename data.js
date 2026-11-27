@@ -3,7 +3,7 @@
 const STARTUP = {
   name: "TradeRef",
   tagline: "Know if you're winning the trade before you hit accept.",
-  pitch: "TradeRef helps fantasy football managers in 10–12 team redraft leagues compare trade offers using fictional player data instead of guessing."
+  pitch: "TradeRef grades every player in a trade offer, tells you if you're winning or losing, and shows whether it fits your team."
 };
 
 const TEAMS = [
@@ -163,7 +163,7 @@ const BACKUP_QUARTERBACKS = [
   ["Callan Wexler", "Copper Ridge Navigators", 13.7, 12.6, 13.4],
   ["Declan Ridley", "Cedar Grove Wolves", 13.1, 12.2, 12.9],
   ["Ellis Marlow", "Desert Palm Coyotes", 12.7, 11.8, 12.5],
-  ["Flynn Oakley", "Eastport Anchors", 12.1, 11.4, 12.0],
+  ["Tobin Merritt", "Eastport Anchors", 12.1, 11.4, 12.0],
   ["Gage Sinclair", "Frost Lake Lynx", 11.8, 10.9, 11.6],
   ["Heath Langford", "Granite Falls Meteors", 11.2, 10.5, 11.0],
   ["Idris Carrow", "Highland Pines Hawks", 10.8, 10.1, 10.7],
