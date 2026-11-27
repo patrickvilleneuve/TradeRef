@@ -96,12 +96,28 @@ const PLAYERS = [
 ];
 
 const EXTRA_PLAYER_FIRST_NAMES = [
-  "Ari", "Bennett", "Callum", "Darcy", "Ellis", "Frankie",
-  "Gideon", "Hollis", "Jamie", "Keaton", "Linden", "Marlowe"
+  "Alistair", "Ambrose", "Ansel", "Arlo", "Asa", "August",
+  "Baylor", "Beckett", "Bodhi", "Bowen", "Bram", "Callan",
+  "Cormac", "Dashiell", "Declan", "Desmond", "Eamon", "Edison",
+  "Elias", "Ellison", "Evander", "Finnegan", "Flynn", "Foster",
+  "Gage", "Griffin", "Harlan", "Heath", "Holden", "Idris",
+  "Jensen", "Kieran", "Lachlan", "Leander", "Leland", "Lucian",
+  "Merrick", "Montgomery", "Niall", "Oren", "Orson", "Otis",
+  "Pascal", "Quincy", "Rafferty", "Shepherd", "Stellan", "Sullivan",
+  "Tate", "Thatcher", "Tiernan", "Tobias", "Vaughn", "Wallace",
+  "Wells", "Whitaker", "Wilder", "Xander", "York", "Zavier"
 ];
 const EXTRA_PLAYER_LAST_NAMES = [
-  "Alden", "Briar", "Caldwell", "Dunley", "Ellery",
-  "Farrow", "Garnett", "Hollander", "Ives", "Juniper"
+  "Abernathy", "Aldridge", "Ashford", "Atwood", "Barlow", "Beckett",
+  "Bexley", "Blackwell", "Bramwell", "Bridger", "Calloway", "Carrow",
+  "Chadwick", "Channing", "Chatham", "Cormier", "Dempsey", "Denholm",
+  "Easton", "Ellington", "Fairchild", "Fawcett", "Fenwick", "Fielding",
+  "Fitzroy", "Galloway", "Halston", "Hardwick", "Huxley", "Ingram",
+  "Irwin", "Jamison", "Keating", "Kincaid", "Kingsley", "Langford",
+  "Latham", "Lockwood", "Marlow", "Merritt", "Norwood", "Oakley",
+  "Pemberton", "Penrose", "Prescott", "Redmond", "Ridley", "Rockwell",
+  "Rourke", "Sinclair", "Sterling", "Templeton", "Thornfield", "Tolland",
+  "Underwood", "Waverly", "Westbrook", "Wexler", "Whitmore", "Winslow"
 ];
 
 function makeExtraPlayers(position, count, firstId) {
@@ -118,7 +134,7 @@ function makeExtraPlayers(position, count, firstId) {
     return {
       id: firstId + index,
       name: EXTRA_PLAYER_FIRST_NAMES[nameIndex % EXTRA_PLAYER_FIRST_NAMES.length] + " " +
-        EXTRA_PLAYER_LAST_NAMES[Math.floor(nameIndex / EXTRA_PLAYER_FIRST_NAMES.length)],
+        EXTRA_PLAYER_LAST_NAMES[Math.floor(nameIndex / 2) % EXTRA_PLAYER_LAST_NAMES.length],
       position: position,
       team: TEAMS[(firstId + index) % TEAMS.length],
       age: 21 + (index % 13),
