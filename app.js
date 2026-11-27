@@ -36,6 +36,7 @@
 
   const give = [];
   const get = [];
+  const searchPosition = { give: "All", get: "All" };
   const giveSearch = document.getElementById("give-search");
   const getSearch = document.getElementById("get-search");
   const giveResults = document.getElementById("give-results");
@@ -60,8 +61,9 @@
   let scoringFormat = "Half-PPR";
   let hasAnalyzedTrade = false;
 
-  const starterSlots = { QB: 1, RB: 2, WR: 2, TE: 1 };
-  const storageKey = "traderef-loaded-league-v2";
+  const starterSlots = { QB: 1, RB: 2, WR: 2, TE: 1, K: 1, DEF: 1 };
+  const flexPositions = ["RB", "WR", "TE"];
+  const storageKey = "traderef-loaded-league-v3";
   const managerSlider = document.getElementById("manager-slider");
   const managerCountOutput = document.getElementById("manager-count");
   const leagueMateCountOutput = document.getElementById("league-member-count");
@@ -95,6 +97,7 @@
   }
 
   function scoringAdjustedPPG(player, points) {
+    if (player.position === "K" || player.position === "DEF") return points;
     const receptionPoints = scoringFormat === "PPR" ? 0.5
       : scoringFormat === "Standard" ? -0.5
         : 0;
@@ -141,10 +144,15 @@
     const projection = percentageFactor(scoringAdjustedPPG(player, player.projectionPPG), 25);
     const thisSeason = percentageFactor(scoringAdjustedPPG(player, player.thisSeasonPPG), 25);
     const touches = percentageFactor(player.touchesPerGame, 30);
-    const usage = (touches + clamp(player.touchShare, 0, 100)) / 2;
+    const isKickerOrDefense = player.position === "K" || player.position === "DEF";
+    const usage = isKickerOrDefense
+      ? 50
+      : (touches + clamp(player.touchShare, 0, 100)) / 2;
     const lastSeason = percentageFactor(scoringAdjustedPPG(player, player.lastSeasonPPG), 25);
     const injury = calculateInjuryFactor(player);
-    const teammateImpact = clamp(50 + getTeammateImpact(player.injuredTeammates) * 8, 0, 100);
+    const teammateImpact = isKickerOrDefense
+      ? 50
+      : clamp(50 + getTeammateImpact(player.injuredTeammates) * 8, 0, 100);
 
     const score = (
       projection * 0.30 +
@@ -309,7 +317,7 @@
       if (!team || typeof team.id !== "string" || typeof team.name !== "string" ||
           typeof team.managerName !== "string" || typeof team.record !== "string" ||
           typeof team.tradeStyle !== "string" || !Array.isArray(team.roster) ||
-          team.roster.length !== 15 ||
+          team.roster.length !== 13 ||
           team.roster.some(function (id) { return !findPlayer(id); })) return false;
       allRosterIds.push.apply(allRosterIds, team.roster);
       return true;
@@ -395,15 +403,26 @@
 
   function getStartingProjection(rosterIds) {
     const roster = rosterIds.map(findPlayer).filter(Boolean);
-    return Object.keys(starterSlots).reduce(function (total, position) {
-      return total + roster.filter(function (player) {
+    const usedPlayers = [];
+    const positionalTotal = Object.keys(starterSlots).reduce(function (total, position) {
+      const starters = roster.filter(function (player) {
         return player.position === position;
       }).sort(function (a, b) {
         return scoringAdjustedPPG(b, b.projectionPPG) - scoringAdjustedPPG(a, a.projectionPPG);
-      }).slice(0, starterSlots[position]).reduce(function (sum, player) {
+      }).slice(0, starterSlots[position]);
+      usedPlayers.push.apply(usedPlayers, starters);
+      return total + starters.reduce(function (sum, player) {
         return sum + scoringAdjustedPPG(player, player.projectionPPG);
       }, 0);
     }, 0);
+    const flex = roster.filter(function (player) {
+      return flexPositions.indexOf(player.position) !== -1 &&
+        usedPlayers.indexOf(player) === -1;
+    }).sort(function (a, b) {
+      return scoringAdjustedPPG(b, b.projectionPPG) -
+        scoringAdjustedPPG(a, a.projectionPPG);
+    })[0];
+    return positionalTotal + (flex ? scoringAdjustedPPG(flex, flex.projectionPPG) : 0);
   }
 
   function makeRosterGroup(position, players) {
@@ -500,6 +519,7 @@
     const container = isGive ? giveResults : getResults;
     const selected = isGive ? give : get;
     const query = search.value.trim().toLowerCase();
+    const position = searchPosition[side];
     container.replaceChildren();
 
     if (selected.length >= 4) {
@@ -517,9 +537,10 @@
       : null;
     const matches = PLAYERS.filter(function (player) {
       return player.name.toLowerCase().includes(query) &&
+        (position === "All" || player.position === position) &&
         (!allowedIds || allowedIds.has(player.id)) &&
         selected.indexOf(player.id) === -1;
-    }).slice(0, 8);
+    });
 
     matches.forEach(function (player) {
       const button = document.createElement("button");
@@ -596,6 +617,19 @@
 
   giveSearch.addEventListener("input", function () { renderSearch("give"); });
   getSearch.addEventListener("input", function () { renderSearch("get"); });
+  document.querySelectorAll("[data-position-filter]").forEach(function (button) {
+    button.addEventListener("click", function () {
+      const side = button.getAttribute("data-position-filter-side");
+      searchPosition[side] = button.getAttribute("data-position-filter");
+      document.querySelectorAll("[data-position-filter-side='" + side + "']")
+        .forEach(function (filterButton) {
+          const selected = filterButton === button;
+          filterButton.classList.toggle("selected", selected);
+          filterButton.setAttribute("aria-pressed", String(selected));
+        });
+      renderSearch(side);
+    });
+  });
   tradePartner.addEventListener("change", function () {
     activePartnerId = tradePartner.value;
     give.length = 0;

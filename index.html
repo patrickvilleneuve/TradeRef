@@ -103,6 +103,15 @@
       <div class="trade-builder">
         <section class="trade-side" aria-labelledby="give-heading">
           <h2 id="give-heading">You give</h2>
+          <div class="position-filters" role="group" aria-label="Filter players you give">
+            <button type="button" class="position-filter selected" data-position-filter-side="give" data-position-filter="All" aria-pressed="true">All</button>
+            <button type="button" class="position-filter" data-position-filter-side="give" data-position-filter="QB" aria-pressed="false">QB</button>
+            <button type="button" class="position-filter" data-position-filter-side="give" data-position-filter="RB" aria-pressed="false">RB</button>
+            <button type="button" class="position-filter" data-position-filter-side="give" data-position-filter="WR" aria-pressed="false">WR</button>
+            <button type="button" class="position-filter" data-position-filter-side="give" data-position-filter="TE" aria-pressed="false">TE</button>
+            <button type="button" class="position-filter" data-position-filter-side="give" data-position-filter="K" aria-pressed="false">K</button>
+            <button type="button" class="position-filter" data-position-filter-side="give" data-position-filter="DEF" aria-pressed="false">DEF</button>
+          </div>
           <label class="player-search">
             <span>Search players</span>
             <input type="search" id="give-search" autocomplete="off">
@@ -113,6 +122,15 @@
 
         <section class="trade-side" aria-labelledby="get-heading">
           <h2 id="get-heading">You get</h2>
+          <div class="position-filters" role="group" aria-label="Filter players you get">
+            <button type="button" class="position-filter selected" data-position-filter-side="get" data-position-filter="All" aria-pressed="true">All</button>
+            <button type="button" class="position-filter" data-position-filter-side="get" data-position-filter="QB" aria-pressed="false">QB</button>
+            <button type="button" class="position-filter" data-position-filter-side="get" data-position-filter="RB" aria-pressed="false">RB</button>
+            <button type="button" class="position-filter" data-position-filter-side="get" data-position-filter="WR" aria-pressed="false">WR</button>
+            <button type="button" class="position-filter" data-position-filter-side="get" data-position-filter="TE" aria-pressed="false">TE</button>
+            <button type="button" class="position-filter" data-position-filter-side="get" data-position-filter="K" aria-pressed="false">K</button>
+            <button type="button" class="position-filter" data-position-filter-side="get" data-position-filter="DEF" aria-pressed="false">DEF</button>
+          </div>
           <label class="player-search">
             <span>Search players</span>
             <input type="search" id="get-search" autocomplete="off">
@@ -318,6 +336,7 @@
       <p class="lead">TradeRef combines six plain-English factors into one player grade.</p>
       <p>For trade comparisons, a player's trade value is their grade minus 45 (minimum 0), estimating the value above a readily available waiver replacement.</p>
       <p>Use the analyzer's scoring toggle to estimate PPR or Standard points from receptions per game.</p>
+      <p>Kickers and defenses are graded on their projected and recent points.</p>
       <div class="factor-grid">
         <article class="card">
           <h2>Rest-of-season projection</h2>

@@ -302,9 +302,36 @@ h1 {
   position: relative;
   display: grid;
   margin-top: 6px;
-  max-height: 260px;
+  max-height: 360px;
   overflow-y: auto;
   border-radius: 9px;
+}
+
+.position-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0 0 10px;
+}
+
+.position-filter {
+  min-height: 30px;
+  padding: 3px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--navy-2);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 750;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.position-filter.selected {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #fff;
 }
 
 .search-result {
