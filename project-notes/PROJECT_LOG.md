@@ -41,6 +41,20 @@
 - What broke: see the table below.
 - Commits: "Added pricing page", "Added save trade and trade history", "Added make it fair, scoring toggle and free plan counter", "Cleaned up the app making sure it all works well", "Redesigned site with referee logo and navy theme", "Updated business case and project log for Session 3".
 
+### Session 4 — Nov 27 — driver: Patrick
+- **Goal for this session:** Make the fictional fantasy rosters more realistic, support kickers and defenses throughout the analyzer and My League, refine player search, and update the business case and project log.
+- **Key prompts we gave Copilot** (shortened):
+  1. Add 16 fictional kickers, 16 team defenses and 12 backup quarterbacks.
+  2. Rebuild the 12 fantasy rosters with a snake draft, realistic position counts, one kicker and one defense each, and a team that is Strong at QB and WR, OK at TE, and Weak at RB.
+  3. Grade kickers and defenses using projected and recent points, with neutral usage and teammate impact, and no scoring-toggle adjustment.
+  4. Group the My League roster by position, add kicker and defense needs, and include a flex in the starting-lineup fit.
+  5. Add position filters and scrollable player search results, and explain kicker and defense grading in How it works.
+  6. Update the home pitch and rename one duplicate player without changing that player's ID or stats.
+  7. Update the business case and project log to reflect the prototype.
+- **What worked:** All 12 fantasy teams have 13 unique players, including two QBs, three RBs, four WRs, two TEs, one K and one DEF. The requested strengths for the demo manager were verified; K/DEF grades stay finite and their points do not change with the scoring format. Community values and all three example trades still reference valid players.
+- **What broke, and how we fixed it:** The first demo draft adjustments did not make the demo manager Strong at QB and WR and Weak at RB, so we retuned the draft swaps. Two players shared the name Flynn Oakley; renamed the backup QB Tobin Merritt while preserving his ID and stats. The home pitch in the page already matched the requested wording; updated `STARTUP.pitch` to match it.
+- **Committed?** No commit was made during this session.
+
 ## Things that broke (running list)
 
 | Date | What went wrong | What we tried | What finally fixed it |
@@ -60,6 +74,8 @@
 | Nov 26 | The first Why line read "adds 85 trade value to the player you receive". | Read the results. | Reworded it to "The best player you get / give up is...". |
 | Nov 26 | The first referee logo looked too simple and was hard to recognize at small size. | Compared it in the header. | Replaced it with a cleaner striped-jersey SVG. |
 | Nov 26 | A short "Update the business case" prompt made Copilot rewrite the whole file, change the headings and add new sections. | Checked the file before committing. | Discarded the rewrite and used a prompt that only updated sections 1 and 4. |
+| Nov 27 | The first roster draft did not meet the demo manager's requested position strengths. | Calculated starter-position ratings against the league average. | Adjusted draft swaps until QB and WR were Strong, RB Weak and TE OK. |
+| Nov 27 | Two fictional players had the same name, Flynn Oakley. | Checked the player list for duplicate names. | Renamed the backup quarterback to Tobin Merritt without changing his ID or stats. |
 
 ## What a real version would need
 

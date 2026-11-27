@@ -2,9 +2,9 @@
 
 ## Executive summary
 
-TradeRef is a proposed trade-decision tool for managers in 10–12 team fantasy football redraft leagues. It would bring player comparisons, roster needs, and clear explanations into one place, helping a manager decide whether to accept, reject, or counter an offer.
+TradeRef is a proposed trade-decision tool for managers in fantasy football redraft leagues. It brings player comparisons, roster needs, and clear explanations into one place, helping a manager decide whether to accept, reject, or counter an offer.
 
-The website is a student prototype, not a live service. Its player and league information is fictional; its acceptance estimate and community values are illustrative; and it has no real accounts, external data feeds, league integrations, or payments. The prototype demonstrates the proposed experience, not proven accuracy, demand, or revenue.
+The website is a student prototype, not a live service. It contains 224 fictional players across 16 fictional football teams and a 12-team sample fantasy league. Its acceptance estimate and community values are illustrative; it has no real accounts, external data feeds, league integrations, or payments. The prototype demonstrates the proposed experience, not proven accuracy, demand, or revenue.
 
 The business opportunity is plausible but unvalidated. A low-cost pilot should first test whether managers find the analysis useful and whether they would pay for individual or league-wide access. A real launch would depend on licensed, timely data, privacy safeguards, and evidence that the estimates help users make better-informed decisions.
 
@@ -12,9 +12,9 @@ The business opportunity is plausible but unvalidated. A low-cost pilot should f
 
 The initial customer is an active manager in a 10–12 team redraft league who receives trade offers during the season. Managers may compare rankings, podcasts, and group-chat opinions, but those sources can differ and may not account for a manager’s roster needs. A player ranking alone does not explain whether a specific trade improves a particular lineup.
 
-TradeRef’s proposed value is a quick, understandable comparison. The analyzer grades players using rest-of-season projections, current- and prior-season points, usage, injury status and expected time out, and teammate injuries. It compares trade value above a replacement-level threshold, gives a win, fair, or loss verdict, and explains factors behind the result. It includes a “Make it fair” suggestion and a scoring toggle for PPR, Half-PPR, and Standard.
+TradeRef’s proposed value is a quick, understandable comparison. The analyzer grades players using rest-of-season projections, current- and prior-season points, usage, injury status and expected time out, and teammate injuries. Kickers and defenses are graded on projected and recent points, with usage and teammate impact treated neutrally; their points do not change with the scoring toggle. It compares trade value above a replacement-level threshold, gives a win, fair, or loss verdict, and explains factors behind the result. It includes a “Make it fair” suggestion, position filters, and a scoring toggle for PPR, Half-PPR, and Standard.
 
-The prototype also demonstrates a fictional league roster, position needs, team-fit comparison, a heuristic “Chance they accept” estimate, saved trade history, sample trades, and community features. In a real product, team fit would need accurate league and lineup data. Acceptance estimates would need validation against a sufficiently large, representative set of real trade offers and outcomes; the current estimate is not a trained model.
+The prototype also demonstrates 13-player fantasy rosters with one or two quarterbacks, three running backs, four wide receivers, two tight ends, one kicker, and one defense per team. Its team-needs card compares starter projections, and “Fit for your team” uses a lineup of one quarterback, two running backs, two wide receivers, one tight end, one flex (running back, wide receiver, or tight end), one kicker, and one defense. Other features include a heuristic “Chance they accept” estimate, saved trade history, sample trades, and community features. In a real product, team fit would need accurate league and lineup data. Acceptance estimates would need validation against a sufficiently large, representative set of real trade offers and outcomes; the current estimate is not a trained model.
 
 The proposed pricing is an assumption to test, not an established offer:
 
@@ -34,7 +34,7 @@ Porter’s value chain highlights operations and marketing and sales as the most
 
 **Marketing and sales:** A free tier could let individual managers try the analyzer before deciding whether to pay. League Pass offers a group-based route to adoption: one purchase could introduce the product to an entire league, while invited managers could see shared features. This could lower acquisition effort per manager, but the effect is only a hypothesis; it depends on leagues valuing the shared features and inviting one another.
 
-The current site is a single-page student prototype with fictional data. Its interface demonstrates the proposed workflow, but it does not yet deliver the operational benefits of real-time licensed data or platform integrations.
+The current site is a single-page student prototype with fictional data. Its interface demonstrates the proposed workflow, including position-filtered player search and roster-aware lineup comparisons, but it does not yet deliver the operational benefits of real-time licensed data or platform integrations.
 
 ## 3. Network effects
 
@@ -87,3 +87,4 @@ TradeRef should not sell user or league data. Before launch, it should establish
 The next step is validation, not a full-scale launch. Test the prototype with managers in the target league format and measure whether they understand the verdict, trust the explanations, return to analyze more trades, and value team-specific context. Test the proposed prices separately from the free experience.
 
 Before a real pilot, confirm the cost and licensing terms for data, identify an integration path that respects platform rules, and define how analysis quality will be evaluated. Only proceed to paid plans or outcome-based predictions if the product demonstrates user value, the data can be used responsibly, and realistic recurring revenue can cover data, hosting, support, and payment costs.
+I used GitHub Copilot and claude to help build the website. I used to claude to build me prompts based on how I wanted the website to look, and revise this business case from my direction and notes. I reviewed every section and can explain all of it.
